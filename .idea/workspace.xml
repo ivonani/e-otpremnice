@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7aa30673-6d94-421a-99ff-182816d575cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/EOtpremniceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/EOtpremniceJob.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/business/OtpremniceBusinessService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/config/BootstrapDataSourceConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/database/SqlServerUrlFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/FirmaEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/IsporukaEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/KupacEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/KurirEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/LogEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/MagacinEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/OdredisteEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/OtpremniceEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/PrevoznikEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/StavkeEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/VozacEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/converter/StringTrimConverter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/FirmEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/IsporukaEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/KupacEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/KurirEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/LogEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/MagacinEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/OdredisteEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/OtpremniceEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/PrevoznikEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/StavkeEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/entity/id/VozacEntityId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/mapper/FirmaToPosiljalacMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/mapper/config/MapstructMapperConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/model/Posiljalac.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/reader/SqlInstanceFileReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/FirmaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/IsporukaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/KupacRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/KurirRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/LogRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/MagacinRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/OdredisteRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/OtpremniceRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/PrevoznikRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/StavkeRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/repository/VozacRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/service/FirmaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/eotpremnice/xml/builder/DispatchSupplierPartyBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="36qyAHBK6n2HJxfjzON4BrgUvlj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.EOtpremniceApplication.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "/Users/ivonanikolic/Documents/InSoft/Code/E-Otpremnice/src/main/java/org/example/Main.java",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/xsd" />
+      <recent name="$PROJECT_DIR$/src/main/resources/xsd/common" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.eotpremnice.repository" />
+      <recent name="org.eotpremnice.entity" />
+      <recent name="org.eotpremnice.entity.id" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="EOtpremniceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.eotpremnice.EOtpremniceApplication" />
+      <module name="E-Otpremnice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.eotpremnice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.EOtpremniceApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7aa30673-6d94-421a-99ff-182816d575cb" name="Changes" comment="" />
+      <created>1765748251591</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765748251591</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/target/generated-sources/annotations/org/eotpremnice/mapper/FirmaToPosiljalacMapperImpl.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/eotpremnice/EOtpremniceJob.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

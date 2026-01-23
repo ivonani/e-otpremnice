@@ -1,0 +1,26 @@
+package org.eotpremnice.entity.id;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.eotpremnice.entity.converter.StringTrimConverter;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Data
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+public class FirmEntityId implements Serializable {
+
+    @Column(name = "IDFirme")
+    @Convert(converter = StringTrimConverter.class)
+    private String iDFirme;
+
+    @Column(name = "TipDokumenta")
+    @Convert(converter = StringTrimConverter.class)
+    private String tipDokumenta;
+}
