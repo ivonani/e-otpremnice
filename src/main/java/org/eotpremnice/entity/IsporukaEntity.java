@@ -46,12 +46,4 @@ public class IsporukaEntity implements Serializable {
     @Column(name = "NapIsporuke")
     @Convert(converter = StringTrimConverter.class)
     private String napIsporuke;
-
-    @Column(name = "ZIP")
-    @Convert(converter = StringTrimConverter.class)
-    private String zip;
-
-    @Column(name = "Drzava")
-    @Convert(converter = StringTrimConverter.class)
-    private String drzava;
 }
