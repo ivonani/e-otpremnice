@@ -1,16 +1,14 @@
 package org.eotpremnice.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class SystblParamJdbcRepository {
 
     private final JdbcTemplate jdbc;
-
-    public SystblParamJdbcRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
 
     public String readNcharParam(int idParam) {
         String sql = "SELECT RTRIM(ncharParam) FROM systblParam WHERE IDParam = ?";

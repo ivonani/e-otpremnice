@@ -5,6 +5,8 @@ import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.Supp
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
 import org.eotpremnice.model.FirmaKey;
 import org.eotpremnice.model.Posiljalac;
+import org.eotpremnice.model.PristupniParametri;
+import org.eotpremnice.service.PristupniParametriService;
 import org.eotpremnice.service.SystblParamService;
 import org.eotpremnice.xml.builder.DespatchAdviceXmlBuilder;
 import org.eotpremnice.xml.builder.DispatchSupplierPartyBuilder;
@@ -19,6 +21,8 @@ public class EOtpremniceJob implements CommandLineRunner {
 
     private final JdbcTemplate jdbc;
     private final SystblParamService systblParamService;
+    private final PristupniParametriService pristupniParametriService;
+
     @Override
     public void run(String... args) {
 
@@ -26,11 +30,14 @@ public class EOtpremniceJob implements CommandLineRunner {
 
         String idRacunar = requireIdRacunar(args);
 
+        PristupniParametri api = pristupniParametriService.loadApiAccess();
         FirmaKey key = systblParamService.loadFirmaKey(idRacunar);
 
         System.out.println("IDRacunar=" + idRacunar);
         System.out.println("IDFirme=" + key.getIdFirme());
         System.out.println("TipDokumenta=" + key.getTipDokumenta());
+        System.out.println("API Key = " + api.getFile());
+        System.out.println("URL = " + api.getUrl());
 
         DespatchAdviceType advice = DespatchAdviceXmlBuilder.empty();
 
