@@ -1,0 +1,28 @@
+package org.eotpremnice.service;
+
+import lombok.RequiredArgsConstructor;
+import org.eotpremnice.model.FirmaKey;
+import org.eotpremnice.repository.SystblParamJdbcRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class SystblParamService {
+
+    private final SystblParamJdbcRepository repo;
+
+    public FirmaKey loadFirmaKey(String idRacunar) {
+
+        String idFirme = repo.readNcharParam(451, idRacunar);
+        String tipDokumenta = repo.readNcharParam(452, idRacunar);
+
+        if (idFirme == null || idFirme.trim().isEmpty()) {
+            throw new IllegalStateException("IDFirme is empty for IDRacunar=" + idRacunar);
+        }
+        if (tipDokumenta == null || tipDokumenta.trim().isEmpty()) {
+            throw new IllegalStateException("TipDokumenta is empty for IDRacunar=" + idRacunar);
+        }
+
+        return new FirmaKey(idFirme.trim(), tipDokumenta.trim());
+    }
+}
