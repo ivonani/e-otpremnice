@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DokumentPdfRepository extends JpaRepository<DokumentPDFEntity, DokumentPDFEntityId> {
 
-    List<DokumentPDFEntity> findByIdFirmeAndTipDokumentaAndIddok(
-            String idFirme, String tipDokumenta, Long iddok
-    );
+//    List<DokumentPDFEntity> findByIdIdFirmeAndTipDokumentaAndIddok(
+//            String idFirme, String tipDokumenta, Long iddok
+//    );
 }

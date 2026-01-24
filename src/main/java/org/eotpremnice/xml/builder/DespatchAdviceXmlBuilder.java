@@ -66,10 +66,11 @@ public class DespatchAdviceXmlBuilder {
         }
 
         List<DokumentPdf> dokumentPdfs = dokumentPdfService.loadPdfPrilozi(idFirme, tipDokumenta, iddok);
-        advice.getAdditionalDocumentReference().addAll(
-                AdditionalDocumentReferenceBuilder.build(dokumentPdfs)
-        );
-
+        if(!dokumentPdfs.isEmpty()) {
+            advice.getAdditionalDocumentReference().addAll(
+                    AdditionalDocumentReferenceBuilder.build(dokumentPdfs)
+            );
+        }
         return advice;
 
     }
