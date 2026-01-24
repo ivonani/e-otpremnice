@@ -2,6 +2,7 @@ package org.eotpremnice.xml.writer;
 
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.ObjectFactory;
+import org.eotpremnice.mapper.UblNamespacePrefixMapper;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -19,6 +20,8 @@ public class XmlFileWriter {
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new UblNamespacePrefixMapper());
 
         // 4. Write file
         Path out = Paths.get(
