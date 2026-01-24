@@ -6,7 +6,9 @@ import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
 
 
+import org.eotpremnice.model.DokumentPdf;
 import org.eotpremnice.model.Otpremnice;
+import org.eotpremnice.service.DokumentPdfService;
 import org.eotpremnice.service.OtpremniceService;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class DespatchAdviceXmlBuilder {
     private static final String PROFILE_ID       = "urn:fdc:peppol.eu:logistics:bis:despatch_advice_only:1";
 
     private final OtpremniceService otpremniceService;
+    private final DokumentPdfService dokumentPdfService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -58,6 +62,12 @@ public class DespatchAdviceXmlBuilder {
             orderRef.setID(cbcId(otpremnice.getIdNarudzbenice()));
             advice.getOrderReference().add(orderRef);
         }
+
+        List<DokumentPdf> dokumentPdfs = dokumentPdfService.loadPdfPrilozi(idFirme, tipDokumenta, iddok);
+        advice.getAdditionalDocumentReference().addAll(
+                AdditionalDocumentReferenceBuilder.build(dokumentPdfs)
+        );
+
         return advice;
 
     }
