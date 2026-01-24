@@ -10,11 +10,11 @@ import org.eotpremnice.model.Otpremnice;
 import org.eotpremnice.service.OtpremniceService;
 import org.springframework.stereotype.Component;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -96,22 +96,20 @@ public class DespatchAdviceXmlBuilder {
         return t;
     }
 
-    private static IssueDateType cbcIssueDate(Date date) throws Exception {
+    private static IssueDateType cbcIssueDate(LocalDate date) throws Exception {
         IssueDateType t = new IssueDateType();
         t.setValue(toXmlDate(date));
         return t;
     }
 
-    private static XMLGregorianCalendar toXmlDate(Date date) throws Exception {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        XMLGregorianCalendar x = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-        // Bitno: IssueDate je DATE (bez vremena) -> obriši time polja
-        x.setTime(DatatypeConstants.FIELD_UNDEFINED,
-                DatatypeConstants.FIELD_UNDEFINED,
-                DatatypeConstants.FIELD_UNDEFINED,
-                DatatypeConstants.FIELD_UNDEFINED);
-        return x;
+    public static XMLGregorianCalendar toXmlDate(LocalDate date) throws DatatypeConfigurationException {
+        return DatatypeFactory.newInstance()
+                .newXMLGregorianCalendarDate(
+                        date.getYear(),
+                        date.getMonthValue(),
+                        date.getDayOfMonth(),
+                        DatatypeConstants.FIELD_UNDEFINED // ← NO timezone
+                );
     }
 
     // -----------------------
