@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
-import org.eotpremnice.entity.id.FirmEntityId;
 import org.eotpremnice.entity.id.IsporukaEntityId;
 
 import javax.persistence.*;

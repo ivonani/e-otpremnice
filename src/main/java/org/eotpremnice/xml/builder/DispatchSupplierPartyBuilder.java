@@ -11,101 +11,111 @@ public class DispatchSupplierPartyBuilder {
 
     private static final String SCHEME_9948 = "9948";
 
-    public static SupplierPartyType build(Posiljalac p) {
-//        require(p.getPib(), "Pošiljalac.PIB");
-//        require(p.getPunNaziv(), "Pošiljalac.Naziv");
-//        require(p.getAdresa(), "Pošiljalac.Adresa");
-//        require(p.getMesto(), "Pošiljalac.Mesto");
-//        require(p.getPibRs(), "Pošiljalac.PIB_RS");
-//        require(p.getMbr(), "Pošiljalac.MBR");
-
-        SupplierPartyType supplier = new SupplierPartyType();
-
+    public static SupplierPartyType build(Posiljalac posiljalac) {
+        SupplierPartyType supplierParty = new SupplierPartyType();
         PartyType party = new PartyType();
 
-        // EndpointID
-        EndpointIDType endpoint = new EndpointIDType();
-        endpoint.setSchemeID(SCHEME_9948);
-        endpoint.setValue("p.getPib()");
+        // 1) EndpointID (PIB) + schemeID="9948"
+        if (notBlank(posiljalac.getPib())) {
+            EndpointIDType endpointID = new EndpointIDType();
+            endpointID.setValue(posiljalac.getPib());
+            endpointID.setSchemeID(SCHEME_9948);
+            party.setEndpointID(endpointID);
+        }
 
-        party.setEndpointID(endpoint);
-
-        // optional PartyIdentification for JBKJS
-//        if (notBlank(p.getJbkjs())) {
+        // 2) PartyIdentification (JBKJS) + schemeID="JBKJS"
+        if (notBlank(posiljalac.getJbkjs())) {
             PartyIdentificationType pid = new PartyIdentificationType();
             IDType id = new IDType();
-            id.setSchemeID(SCHEME_9948);
-            id.setValue("JBKJS:" + "p.getJbkjs()");
+            id.setValue(posiljalac.getJbkjs());
+            id.setSchemeID("JBKJS");
             pid.setID(id);
             party.getPartyIdentification().add(pid);
-//        }
+        }
 
-        // PartyName
-        PartyNameType pn = new PartyNameType();
-        NameType name = new NameType();
-        name.setValue("p.getPunNaziv()");
-        pn.setName(name);
-        party.getPartyName().add(pn);
+        // 3) PartyName/Name (PunNaziv)
+        if (notBlank(posiljalac.getPunNaziv())) {
+            PartyNameType pn = new PartyNameType();
+            NameType name = new NameType();
+            name.setValue(posiljalac.getPunNaziv());
+            pn.setName(name);
+            party.getPartyName().add(pn);
+        }
 
-        // Address
+        // 4) PostalAddress
         AddressType addr = new AddressType();
 
-        StreetNameType street = new StreetNameType();
-        street.setValue("p.getAdresa()");
-        addr.setStreetName(street);
+        if (notBlank(posiljalac.getAdresa())) {
+            StreetNameType street = new StreetNameType();
+            street.setValue(posiljalac.getAdresa());
+            addr.setStreetName(street);
+        }
 
-        CityNameType city = new CityNameType();
-        city.setValue("p.getMesto()");
-        addr.setCityName(city);
+        // AdditionalStreetName / AddressLine -> "NE ISPISUJE SE" => ne dodajemo
 
-//        if (notBlank(p.getZip())) {
+        if (notBlank(posiljalac.getMesto())) {
+            CityNameType city = new CityNameType();
+            city.setValue(posiljalac.getMesto());
+            addr.setCityName(city);
+        }
+
+        if (notBlank(posiljalac.getZip())) {
             PostalZoneType postal = new PostalZoneType();
-            postal.setValue("p.getZip()");
+            postal.setValue(posiljalac.getZip());
             addr.setPostalZone(postal);
-//        }
+        }
 
+        // Country/IdentificationCode (na slici RS fiksno)
         CountryType country = new CountryType();
-        IdentificationCodeType countryCode = new IdentificationCodeType();
-        countryCode.setValue(notBlank("p.getDrzava()") ? "p.getDrzava()" : "RS");
-        country.setIdentificationCode(countryCode);
+        IdentificationCodeType code = new IdentificationCodeType();
+        code.setValue(notBlank(posiljalac.getDrzava()) ? posiljalac.getDrzava() : "RS");
+        country.setIdentificationCode(code);
         addr.setCountry(country);
 
+        // set address samo ako bar nešto ima
         party.setPostalAddress(addr);
 
-        // Tax scheme
-        PartyTaxSchemeType pts = new PartyTaxSchemeType();
-        CompanyIDType companyId = new CompanyIDType();
-        companyId.setValue("p.getPibRs()");
-        pts.setCompanyID(companyId);
+        // 5) PartyTaxScheme: CompanyID = PIB_RS ; TaxScheme/ID = "VAT"
+        if (notBlank(posiljalac.getPibRs())) {
+            PartyTaxSchemeType tax = new PartyTaxSchemeType();
 
-        TaxSchemeType taxScheme = new TaxSchemeType();
-        IDType taxId = new IDType();
-        taxId.setValue("VAT");
-        taxScheme.setID(taxId);
-        pts.setTaxScheme(taxScheme);
+            CompanyIDType companyID = new CompanyIDType();
+            companyID.setValue(posiljalac.getPibRs());
+            tax.setCompanyID(companyID);
 
-        party.getPartyTaxScheme().add(pts);
+            TaxSchemeType taxScheme = new TaxSchemeType();
+            IDType taxId = new IDType();
+            taxId.setValue("VAT");
+            taxScheme.setID(taxId);
+            tax.setTaxScheme(taxScheme);
 
-        // Legal entity
-        PartyLegalEntityType ple = new PartyLegalEntityType();
+            party.getPartyTaxScheme().add(tax);
+        }
 
-        RegistrationNameType regName = new RegistrationNameType();
-        regName.setValue("p.getPunNaziv()");
-        ple.setRegistrationName(regName);
+        // 6) PartyLegalEntity: RegistrationName = PunNaziv ; CompanyID = MBR
+        PartyLegalEntityType le = new PartyLegalEntityType();
 
-        CompanyIDType mbr = new CompanyIDType();
-        mbr.setValue("p.getMbr()");
-        ple.setCompanyID(mbr);
+        if (notBlank(posiljalac.getPunNaziv())) {
+            RegistrationNameType rn = new RegistrationNameType();
+            rn.setValue(posiljalac.getPunNaziv());
+            le.setRegistrationName(rn);
+        }
 
-        party.getPartyLegalEntity().add(ple);
+        if (notBlank(posiljalac.getMbr())) {
+            CompanyIDType companyId = new CompanyIDType();
+            companyId.setValue(posiljalac.getMbr());
+            le.setCompanyID(companyId);
+        }
 
-        supplier.setParty(party);
-        return supplier;
+        // dodajemo samo ako ima bar nešto
+        party.getPartyLegalEntity().add(le);
+
+        supplierParty.setParty(party);
+        return supplierParty;
     }
 
-    private static boolean notBlank(String s) { return s != null && !s.trim().isEmpty(); }
-    private static void require(String v, String name) {
-        if (!notBlank(v)) throw new IllegalArgumentException("Missing mandatory field: " + name);
+    private static boolean notBlank(String s) {
+        return s != null && !s.trim().isEmpty();
     }
 
 }

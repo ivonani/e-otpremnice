@@ -8,7 +8,9 @@ import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceT
 
 import org.eotpremnice.model.DokumentPdf;
 import org.eotpremnice.model.Otpremnice;
+import org.eotpremnice.model.Posiljalac;
 import org.eotpremnice.service.DokumentPdfService;
+import org.eotpremnice.service.FirmaService;
 import org.eotpremnice.service.OtpremniceService;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +18,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -30,6 +30,7 @@ public class DespatchAdviceXmlBuilder {
 
     private final OtpremniceService otpremniceService;
     private final DokumentPdfService dokumentPdfService;
+    private final FirmaService firmaService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -71,6 +72,9 @@ public class DespatchAdviceXmlBuilder {
                     AdditionalDocumentReferenceBuilder.build(dokumentPdfs)
             );
         }
+
+        Posiljalac posiljalac = firmaService.loadPosiljalac(idFirme, tipDokumenta);
+        advice.setDespatchSupplierParty(DispatchSupplierPartyBuilder.build(posiljalac));
         return advice;
 
     }

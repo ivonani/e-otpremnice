@@ -35,7 +35,7 @@ public class FirmaEntity implements Serializable {
 
     @Column(name = "PIB_RS")
     @Convert(converter = StringTrimConverter.class)
-    private String pib_rs;
+    private String pibRs;
 
     @Column(name = "JBKJS")
     @Convert(converter = StringTrimConverter.class)
