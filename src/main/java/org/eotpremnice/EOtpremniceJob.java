@@ -23,6 +23,7 @@ public class EOtpremniceJob implements CommandLineRunner {
     private final SystblParamService systblParamService;
     private final PristupniParametriService pristupniParametriService;
     private final EoLogService eoLogService;
+    private final DespatchAdviceXmlBuilder builder;
 
     @Override
     public void run(String... args) {
@@ -38,7 +39,13 @@ public class EOtpremniceJob implements CommandLineRunner {
                 key.getIdFirme(), key.getTipDokumenta(), idRacunar
         );
         for (EoLogEntry entry : logEntries) {
-            DespatchAdviceType advice = DespatchAdviceXmlBuilder.builder(entry.getIdDok());
+            DespatchAdviceType advice = null;
+            try {
+                advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
             try {
                 XmlFileWriter.write(advice);
             } catch (Exception e) {
