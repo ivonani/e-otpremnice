@@ -35,7 +35,7 @@ public class IsporukaEntity implements Serializable {
 
     @Column(name = "ZapreminaJM")
     @Convert(converter = StringTrimConverter.class)
-    private String zapreminJM;
+    private String zapreminaJM;
 
     @Column(name = "Zapremina")
     private BigDecimal zapremina;
