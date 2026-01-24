@@ -39,7 +39,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                 key.getIdFirme(), key.getTipDokumenta(), idRacunar
         );
         for (EoLogEntry entry : logEntries) {
-            DespatchAdviceType advice = null;
+            DespatchAdviceType advice;
             try {
                 advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
             } catch (Exception e) {

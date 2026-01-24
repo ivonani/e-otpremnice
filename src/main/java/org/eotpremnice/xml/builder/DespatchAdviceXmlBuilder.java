@@ -1,6 +1,8 @@
 package org.eotpremnice.xml.builder;
 
 import lombok.RequiredArgsConstructor;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.OrderReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
 
 
@@ -8,21 +10,125 @@ import org.eotpremnice.model.Otpremnice;
 import org.eotpremnice.service.OtpremniceService;
 import org.springframework.stereotype.Component;
 
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 @Component
 @RequiredArgsConstructor
 public class DespatchAdviceXmlBuilder {
 
+    private static final String CUSTOMIZATION_ID = "urn:fdc:peppol.eu:logistics:trns:advanced_despatch_advice:1";
+    private static final String PROFILE_ID       = "urn:fdc:peppol.eu:logistics:bis:despatch_advice_only:1";
+
     private final OtpremniceService otpremniceService;
-    private final UBLExtensionBuilder ublExtensionBuilder;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
-
-        // 1. Create EMPTY DespatchAdvice
         DespatchAdviceType advice = new DespatchAdviceType();
         Otpremnice otpremnice = otpremniceService.loadOtpremnice(idFirme, tipDokumenta, iddok);
         advice.setUBLExtensions(UBLExtensionBuilder.build(otpremnice));
+
+        advice.setCustomizationID(cbcCustomizationId(CUSTOMIZATION_ID));
+
+        // 3) ProfileID (FIXNO)
+        advice.setProfileID(cbcProfileId(PROFILE_ID));
+
+        // 4) ID <- BrDok
+        advice.setID(cbcId(required(otpremnice.getBrDok(), "BrDok")));
+
+        // 5) IssueDate <- DatumIzdavanja
+        advice.setIssueDate(cbcIssueDate(required(otpremnice.getDatumIzdavanja(), "DatumIzdavanja")));
+
+        // 6) DespatchAdviceTypeCode <- TipOtpremnice
+        if (notBlank(otpremnice.getTipOtpremnice())) {
+            advice.setDespatchAdviceTypeCode(cbcDespatchAdviceTypeCode(otpremnice.getTipOtpremnice()));
+        }
+
+        // 7) Note <- NapOpsta (0..n)
+        if (notBlank(otpremnice.getNapOpsta())) {
+            advice.getNote().add(cbcNote(otpremnice.getNapOpsta()));
+        }
+
+        // 8) OrderReference/cbc:ID <- IDNarudzbenice
+        if (notBlank(otpremnice.getIdNarudzbenice())) {
+            OrderReferenceType orderRef = new OrderReferenceType();
+            orderRef.setID(cbcId(otpremnice.getIdNarudzbenice()));
+            advice.getOrderReference().add(orderRef);
+        }
         return advice;
 
+    }
+
+    // -----------------------
+    // Helper CBC builders
+    // -----------------------
+
+    private static CustomizationIDType cbcCustomizationId(String value) {
+        CustomizationIDType t = new CustomizationIDType();
+        t.setValue(value);
+        return t;
+    }
+
+    private static ProfileIDType cbcProfileId(String value) {
+        ProfileIDType t = new ProfileIDType();
+        t.setValue(value);
+        return t;
+    }
+
+    private static IDType cbcId(String value) {
+        IDType t = new IDType();
+        t.setValue(value);
+        return t;
+    }
+
+    private static DespatchAdviceTypeCodeType cbcDespatchAdviceTypeCode(String value) {
+        DespatchAdviceTypeCodeType t = new DespatchAdviceTypeCodeType();
+        t.setValue(value);
+        return t;
+    }
+
+    private static NoteType cbcNote(String value) {
+        NoteType t = new NoteType();
+        t.setValue(value);
+        return t;
+    }
+
+    private static IssueDateType cbcIssueDate(Date date) throws Exception {
+        IssueDateType t = new IssueDateType();
+        t.setValue(toXmlDate(date));
+        return t;
+    }
+
+    private static XMLGregorianCalendar toXmlDate(Date date) throws Exception {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        XMLGregorianCalendar x = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+        // Bitno: IssueDate je DATE (bez vremena) -> obriši time polja
+        x.setTime(DatatypeConstants.FIELD_UNDEFINED,
+                DatatypeConstants.FIELD_UNDEFINED,
+                DatatypeConstants.FIELD_UNDEFINED,
+                DatatypeConstants.FIELD_UNDEFINED);
+        return x;
+    }
+
+    // -----------------------
+    // small helpers
+    // -----------------------
+
+    private static boolean notBlank(String s) {
+        return s != null && !s.trim().isEmpty();
+    }
+
+    private static <T> T required(T v, String field) {
+        if (v == null) throw new IllegalArgumentException("Missing required field: " + field);
+        return v;
+    }
+
+    private static String required(String v, String field) {
+        if (!notBlank(v)) throw new IllegalArgumentException("Missing required field: " + field);
+        return v.trim();
     }
 }
