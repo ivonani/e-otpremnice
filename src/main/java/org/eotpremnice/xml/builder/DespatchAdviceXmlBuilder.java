@@ -7,10 +7,12 @@ import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceT
 
 
 import org.eotpremnice.model.DokumentPdf;
+import org.eotpremnice.model.Kupac;
 import org.eotpremnice.model.Otpremnice;
 import org.eotpremnice.model.Posiljalac;
 import org.eotpremnice.service.DokumentPdfService;
 import org.eotpremnice.service.FirmaService;
+import org.eotpremnice.service.KupacService;
 import org.eotpremnice.service.OtpremniceService;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,7 @@ public class DespatchAdviceXmlBuilder {
     private final OtpremniceService otpremniceService;
     private final DokumentPdfService dokumentPdfService;
     private final FirmaService firmaService;
+    private final KupacService kupacService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -75,6 +78,9 @@ public class DespatchAdviceXmlBuilder {
 
         Posiljalac posiljalac = firmaService.loadPosiljalac(idFirme, tipDokumenta);
         advice.setDespatchSupplierParty(DispatchSupplierPartyBuilder.build(posiljalac));
+
+        Kupac kupac = kupacService.loadKupac(idFirme, tipDokumenta, iddok);
+        advice.setDeliveryCustomerParty(DeliveryCustomerPartyBuilder.build(kupac));
         return advice;
 
     }

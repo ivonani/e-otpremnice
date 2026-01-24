@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
-import org.eotpremnice.entity.id.FirmEntityId;
 import org.eotpremnice.entity.id.KupacEntityId;
 
 import javax.persistence.*;
@@ -22,9 +21,6 @@ public class KupacEntity implements Serializable {
     @EmbeddedId
     private KupacEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "PunNaziv")
     @Convert(converter = StringTrimConverter.class)
     private String punNaziv;
@@ -39,7 +35,7 @@ public class KupacEntity implements Serializable {
 
     @Column(name = "PIB_RS")
     @Convert(converter = StringTrimConverter.class)
-    private String pib_rs;
+    private String pibRs;
 
     @Column(name = "JBKJS")
     @Convert(converter = StringTrimConverter.class)
