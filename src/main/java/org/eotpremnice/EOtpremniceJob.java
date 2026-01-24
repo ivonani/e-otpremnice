@@ -2,8 +2,10 @@ package org.eotpremnice;
 
 import lombok.RequiredArgsConstructor;
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
+import org.eotpremnice.model.EoLogEntry;
 import org.eotpremnice.model.FirmaKey;
 import org.eotpremnice.model.PristupniParametri;
+import org.eotpremnice.service.EoLogService;
 import org.eotpremnice.service.PristupniParametriService;
 import org.eotpremnice.service.SystblParamService;
 import org.eotpremnice.xml.builder.DespatchAdviceXmlBuilder;
@@ -11,6 +13,7 @@ import org.eotpremnice.xml.writer.XmlFileWriter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class EOtpremniceJob implements CommandLineRunner {
     private final JdbcTemplate jdbc;
     private final SystblParamService systblParamService;
     private final PristupniParametriService pristupniParametriService;
+    private final EoLogService eoLogService;
 
     @Override
     public void run(String... args) {
@@ -30,13 +34,17 @@ public class EOtpremniceJob implements CommandLineRunner {
         PristupniParametri api = pristupniParametriService.loadApiAccess();
         FirmaKey key = systblParamService.loadFirmaKey(idRacunar);
 
-        DespatchAdviceType advice = DespatchAdviceXmlBuilder.empty();
-
-        try {
-            XmlFileWriter.write(advice);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        List<EoLogEntry> logEntries = eoLogService.loadDocumentsToSend(
+                key.getIdFirme(), key.getTipDokumenta(), idRacunar
+        );
+        for (EoLogEntry entry : logEntries) {
+            DespatchAdviceType advice = DespatchAdviceXmlBuilder.builder(entry.getIdDok());
+            try {
+                XmlFileWriter.write(advice);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
     }
 
