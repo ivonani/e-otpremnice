@@ -8,8 +8,8 @@ public final class SqlServerUrlFactory {
 
     public static String buildJdbcUrl(String instanceName) {
         // instanceName primer: "localhost\\SQLEXPRESS" ili "SQL01\\INSOFT"
-        return "jdbc:sqlserver://192.168.0.36"
-//                + instanceName
+        return "jdbc:sqlserver://"
+                + instanceName
                 + ";database=" + DB_NAME
                 + ";";
     }
