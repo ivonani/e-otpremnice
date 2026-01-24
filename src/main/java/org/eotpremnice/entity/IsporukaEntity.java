@@ -22,9 +22,6 @@ public class IsporukaEntity implements Serializable {
     @EmbeddedId
     private IsporukaEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "Broj")
     @Convert(converter = StringTrimConverter.class)
     private String broj;
