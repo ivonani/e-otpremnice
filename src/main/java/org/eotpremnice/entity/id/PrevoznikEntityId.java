@@ -25,4 +25,7 @@ public class PrevoznikEntityId implements Serializable {
     @Column(name = "TipDokumenta")
     @Convert(converter = StringTrimConverter.class)
     private String tipDokumenta;
+
+    @Column(name = "IDDOK")
+    private Long iddok;
 }

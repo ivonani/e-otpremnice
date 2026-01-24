@@ -1,0 +1,22 @@
+package org.eotpremnice.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+public class Prevoznik {
+    private String pib;
+    private String jbkjs;
+    private String punNaziv;
+    private String adresa;
+    private String mesto;
+    private String zip;
+    private String drzava;   // fiksno "RS" ako tako piše u tabeli
+    private String pibRs;
+    private String mbr;
+}

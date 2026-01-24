@@ -29,6 +29,7 @@ public class DespatchAdviceXmlBuilder {
     private final FirmaService firmaService;
     private final KupacService kupacService;
     private final IsporukaService isporukaService;
+    private final PrevoznikService prevoznikService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -78,7 +79,8 @@ public class DespatchAdviceXmlBuilder {
         advice.setDeliveryCustomerParty(DeliveryCustomerPartyBuilder.build(kupac));
 
         Isporuka isporuka = isporukaService.loadIsporuka(idFirme, tipDokumenta, iddok);
-        advice.setShipment(ShipmentBuilder.build(isporuka));
+        Prevoznik prevoznik = prevoznikService.loadPrevoznik(idFirme, tipDokumenta, iddok);
+        advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik));
         return advice;
 
     }

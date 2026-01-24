@@ -22,9 +22,6 @@ public class PrevoznikEntity implements Serializable {
     @EmbeddedId
     private PrevoznikEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "PunNaziv")
     @Convert(converter = StringTrimConverter.class)
     private String punNaziv;
