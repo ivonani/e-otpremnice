@@ -4,7 +4,9 @@ import lombok.NoArgsConstructor;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
 import org.eotpremnice.model.Isporuka;
+import org.eotpremnice.model.Kurir;
 import org.eotpremnice.model.Prevoznik;
+import org.eotpremnice.model.Vozac;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -16,7 +18,9 @@ public final class ShipmentBuilder {
     private static final String SCHEME_ID_9948 = "9948";
     private static final String TAX_SCHEME_VAT = "VAT";
 
-    public static ShipmentType build(Isporuka isporuka, Prevoznik prevoznik) {
+    public static ShipmentType build(
+            Isporuka isporuka, Prevoznik prevoznik,
+            Vozac vozac, Kurir kurir) {
         if (isporuka == null)
             return null;
 
@@ -64,17 +68,125 @@ public final class ShipmentBuilder {
             shipment.getDeliveryInstructions().add(di);
         }
 
+        ShipmentStageType stage = new ShipmentStageType();
         if (prevoznik != null) {
-            shipment.getShipmentStage().add(buildShipmentStage(prevoznik));
+            stage.getCarrierParty().add(buildCarrierParty(prevoznik));
+            shipment.getShipmentStage().add(stage);
         }
+
+        // DriverPerson (vozač)
+        if (vozac != null) {
+            stage.getDriverPerson().add(buildDriverPerson(vozac));
+        }
+
+        // MasterPerson (kurir)
+        if (kurir != null) {
+            stage.setMasterPerson(buildMasterPerson(kurir));
+        }
+
+        // TransportMeans / RoadTransport / LicensePlateID (regBroj)
+        if (vozac != null && vozac.getRegBroj() != null) {
+            stage.setTransportMeans(buildTransportMeans(vozac.getRegBroj()));
+        }
+
+        shipment.getShipmentStage().add(stage);
 
         return shipment;
     }
 
-    private static ShipmentStageType buildShipmentStage(Prevoznik p) {
-        ShipmentStageType stage = new ShipmentStageType();
-        stage.getCarrierParty().add(buildCarrierParty(p));
-        return stage;
+    private static PersonType buildDriverPerson(Vozac v) {
+        PersonType p = new PersonType();
+
+        if (v.getIdVozac() != null) {
+            IDType id = new IDType();
+            id.setValue(v.getIdVozac());
+            p.setID(id);
+        }
+
+        if (v.getIme() != null) {
+            FirstNameType fn = new FirstNameType();
+            fn.setValue(v.getIme());
+            p.setFirstName(fn);
+        }
+
+        if (v.getPrezime() != null) {
+            FamilyNameType ln = new FamilyNameType();
+            ln.setValue(v.getPrezime());
+            p.setFamilyName(ln);
+        }
+
+        // Vozacka dozvola: IdentityDocumentReference
+        if (v.getBrojDozvole() != null) {
+            DocumentReferenceType doc = new DocumentReferenceType();
+
+            IDType docId = new IDType();
+            docId.setValue(v.getBrojDozvole());
+            doc.setID(docId);
+
+            DocumentTypeType docType = new DocumentTypeType();
+            docType.setValue("Vozačka dozvola");
+            doc.setDocumentType(docType);
+
+            p.getIdentityDocumentReference().add(doc);
+        }
+
+        // Email: Contact/ElectronicMail
+        if (v.getEmail() != null) {
+            ContactType c = new ContactType();
+            ElectronicMailType mail = new ElectronicMailType();
+            mail.setValue(v.getEmail());
+            c.setElectronicMail(mail);
+            p.setContact(c);
+        }
+
+        // Telefon NE popunjavaš (po specifikaciji)
+
+        return p;
+    }
+
+    private static PersonType buildMasterPerson(Kurir k) {
+        PersonType p = new PersonType();
+
+        if (k.getIme() != null) {
+            FirstNameType fn = new FirstNameType();
+            fn.setValue(k.getIme());
+            p.setFirstName(fn);
+        }
+
+        if (k.getPrezime() != null) {
+            FamilyNameType ln = new FamilyNameType();
+            ln.setValue(k.getPrezime());
+            p.setFamilyName(ln);
+        }
+
+        // Licna karta: IdentityDocumentReference
+        if (k.getBrLk() != null) {
+            DocumentReferenceType doc = new DocumentReferenceType();
+
+            IDType docId = new IDType();
+            docId.setValue(k.getBrLk());
+            doc.setID(docId);
+
+            DocumentTypeType docType = new DocumentTypeType();
+            docType.setValue("Lična karta");
+            doc.setDocumentType(docType);
+
+            p.getIdentityDocumentReference().add(doc);
+        }
+
+        return p;
+    }
+
+    private static TransportMeansType buildTransportMeans(String licensePlate) {
+        TransportMeansType tm = new TransportMeansType();
+
+        RoadTransportType road = new RoadTransportType();
+        LicensePlateIDType lp = new LicensePlateIDType();
+        lp.setValue(licensePlate);
+        road.setLicensePlateID(lp);
+
+        tm.setRoadTransport(road);
+        return tm;
     }
 
     private static PartyType buildCarrierParty(Prevoznik p) {

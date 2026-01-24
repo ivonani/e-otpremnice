@@ -22,9 +22,6 @@ public class VozacEntity implements Serializable {
     @EmbeddedId
     private VozacEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "IDVozac")
     @Convert(converter = StringTrimConverter.class)
     private String idVozac;

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
 import org.eotpremnice.entity.id.KurirEntityId;
-import org.eotpremnice.entity.id.VozacEntityId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,9 +20,6 @@ public class KurirEntity implements Serializable {
 
     @EmbeddedId
     private KurirEntityId id;
-
-    @Column(name = "IDDOK")
-    private Integer iddok;
 
     @Column(name = "ImePrezima")
     @Convert(converter = StringTrimConverter.class)

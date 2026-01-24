@@ -30,6 +30,8 @@ public class DespatchAdviceXmlBuilder {
     private final KupacService kupacService;
     private final IsporukaService isporukaService;
     private final PrevoznikService prevoznikService;
+    private final VozacService vozacService;
+    private final KurirService kurirService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -80,7 +82,9 @@ public class DespatchAdviceXmlBuilder {
 
         Isporuka isporuka = isporukaService.loadIsporuka(idFirme, tipDokumenta, iddok);
         Prevoznik prevoznik = prevoznikService.loadPrevoznik(idFirme, tipDokumenta, iddok);
-        advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik));
+        Vozac vozac = vozacService.loadVozac(idFirme, tipDokumenta, iddok);
+        Kurir kurir = kurirService.loadKurir(idFirme, tipDokumenta, iddok);
+        advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik, vozac, kurir));
         return advice;
 
     }
