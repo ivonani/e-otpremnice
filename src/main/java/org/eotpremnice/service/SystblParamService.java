@@ -13,8 +13,8 @@ public class SystblParamService {
 
     public FirmaKey loadFirmaKey(String idRacunar) {
 
-        String idFirme = repo.readNcharParam(451, idRacunar);
-        String tipDokumenta = repo.readNcharParam(452, idRacunar);
+        String idFirme = repo.readNcharParam(451);
+        String tipDokumenta = repo.readNcharParam(452);
 
         if (idFirme == null || idFirme.trim().isEmpty()) {
             throw new IllegalStateException("IDFirme is empty for IDRacunar=" + idRacunar);
