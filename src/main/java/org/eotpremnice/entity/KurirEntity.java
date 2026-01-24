@@ -21,9 +21,9 @@ public class KurirEntity implements Serializable {
     @EmbeddedId
     private KurirEntityId id;
 
-    @Column(name = "ImePrezima")
+    @Column(name = "ImePrezime")
     @Convert(converter = StringTrimConverter.class)
-    private String imePartizan;
+    private String imePrezime;
 
     @Column(name = "BrLK")
     @Convert(converter = StringTrimConverter.class)
