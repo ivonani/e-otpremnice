@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
 import org.eotpremnice.entity.id.MagacinEntityId;
-import org.eotpremnice.entity.id.OtpremniceEntityId;
 
 import javax.persistence.*;
 import java.io.Serializable;

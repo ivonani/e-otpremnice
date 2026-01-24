@@ -1,7 +1,6 @@
 package org.eotpremnice.mapper;
 
 import org.eotpremnice.entity.FirmaEntity;
-import org.eotpremnice.mapper.config.MapstructMapperConfiguration;
 import org.eotpremnice.model.Posiljalac;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

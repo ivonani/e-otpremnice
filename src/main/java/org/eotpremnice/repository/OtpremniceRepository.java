@@ -7,6 +7,6 @@ import org.eotpremnice.entity.id.OtpremniceEntityId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-//@Repository
-//public interface OtpremniceRepository extends JpaRepository<OtpremniceEntity, OtpremniceEntityId> {
-//}
+@Repository
+public interface OtpremniceRepository extends JpaRepository<OtpremniceEntity, OtpremniceEntityId> {
+}

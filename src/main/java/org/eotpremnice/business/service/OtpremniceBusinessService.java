@@ -1,4 +1,4 @@
-package org.eotpremnice.business;
+package org.eotpremnice.business.service;
 
 import lombok.RequiredArgsConstructor;
 import org.eotpremnice.service.FirmaService;

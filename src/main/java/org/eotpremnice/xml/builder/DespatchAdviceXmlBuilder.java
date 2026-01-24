@@ -12,6 +12,7 @@ public class DespatchAdviceXmlBuilder {
 
         // 1. Create EMPTY DespatchAdvice
         DespatchAdviceType advice = new DespatchAdviceType();
+        advice.setUBLExtensions(UBLExtensionBuilder.build());
         return advice;
 
     }

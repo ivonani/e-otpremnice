@@ -16,14 +16,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Table(name = "erLog")
+@Table(name = "Otpremnice")
 public class OtpremniceEntity implements Serializable {
 
     @EmbeddedId
     private OtpremniceEntityId id;
-
-    @Column(name = "IDDOK")
-    private Integer iddok;
 
     @Column(name = "BrDok")
     @Convert(converter = StringTrimConverter.class)
@@ -64,14 +61,13 @@ public class OtpremniceEntity implements Serializable {
     @Column(name = "NacinOtpreme")
     private Integer nacinOtpreme;
 
-    @Column(name = "Povratnica")
+    @Column(name = "NapOpsta")
     @Convert(converter = StringTrimConverter.class)
-    private String povratnica;
+    private String napOpsta;
+
+    @Column(name = "Povratnica")
+    private Integer povratnica;
 
     @Column(name = "OpasneMaterije")
     private Integer opasneMaterije;
-
-
-
-
 }
