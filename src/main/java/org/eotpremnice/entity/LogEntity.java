@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Table(name = "erLog")
+@Table(name = "eoLog")
 public class LogEntity implements Serializable {
 
     @EmbeddedId

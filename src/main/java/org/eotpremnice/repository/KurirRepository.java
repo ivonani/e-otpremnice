@@ -5,6 +5,8 @@ import org.eotpremnice.entity.KurirEntity;
 import org.eotpremnice.entity.id.FirmEntityId;
 import org.eotpremnice.entity.id.KurirEntityId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface KurirRepository extends JpaRepository<KurirEntity, KurirEntityId> {
-}
+//@Repository
+//public interface KurirRepository extends JpaRepository<KurirEntity, KurirEntityId> {
+//}
