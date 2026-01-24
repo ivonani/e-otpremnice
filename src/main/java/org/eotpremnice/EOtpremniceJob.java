@@ -57,7 +57,7 @@ public class EOtpremniceJob implements CommandLineRunner {
 
     private String requireIdRacunar(String[] args) {
         if (args == null || args.length != 1 || args[0].trim().isEmpty()) {
-            return "00001";
+            return "00015";
 //            throw new IllegalArgumentException("Usage: app <IDRacunar> (npr. 00001)");
         }
         return args[0].trim();
