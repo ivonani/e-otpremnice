@@ -7,9 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Mapper(
         componentModel = "spring",
@@ -21,19 +19,18 @@ import java.util.Date;
 )
 public interface OtpremniceMapper {
 
-    @Mapping(target = "datumIzdavanja", source = "datumIzdavanja", qualifiedByName = "isoDate")
+    @Mapping(
+            target = "datumIzdavanja",
+            source = "datumIzdavanja",
+            qualifiedByName = "toLocalDate"
+    )
     Otpremnice toModel(OtpremniceEntity entity);
 
-    @Named("isoDate")
-    static Date isoDate(String value) {
-        if (value == null || value.trim().isEmpty()) return null;
-
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setLenient(false);
-            return sdf.parse(value.trim());
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date (expected yyyy-MM-dd): " + value, e);
+    @Named("toLocalDate")
+    static LocalDate toLocalDate(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
         }
+        return LocalDate.parse(value.trim()); // yyyy-MM-dd
     }
 }

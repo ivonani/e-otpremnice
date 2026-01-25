@@ -73,12 +73,11 @@ public class EOtpremniceJob implements CommandLineRunner {
                             SupplierChangesResponse parsed = sefClient.parseChanges(objectMapper, json);
 
                             SupplierChangesResponse.Item item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
-                            SupplierChangesResponse.DespatchAdvice da = (item0 != null && item0.getData() != null) ? item0.getData().getDespatchAdvice() : null;
+                            SupplierChangesResponse.DataBlock data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
 
                             if (item0 != null && DOCUMENT_REQUEST_SUCCEEDED.equals(item0.getType())) {
 
-                                String sefId = (da != null) ? da.getDocumentId() : null;
-                                String status = (da != null) ? da.getStatus() : null;
+                                String sefId = (data != null) ? data.getDocumentId() : null;
 
                                 eoLogService.updateLog(
                                         key,
@@ -87,7 +86,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                                         1,
                                         200,
                                         sefId,
-                                        status,
+                                        "Sent",
                                         json,
                                         LocalDateTime.now()
                                 );

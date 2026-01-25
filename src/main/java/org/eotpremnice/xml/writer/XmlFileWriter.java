@@ -45,6 +45,6 @@ public class XmlFileWriter {
         marshaller.marshal(root, out.toFile());
         marshaller.marshal(root, out2.toFile());
 
-        return out2;
+        return out;
     }
 }

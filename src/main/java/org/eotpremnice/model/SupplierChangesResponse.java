@@ -24,13 +24,7 @@ public class SupplierChangesResponse {
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DataBlock {
-        private DespatchAdvice despatchAdvice;
-    }
-
-    @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class DespatchAdvice {
         private String documentId;       // <-- SEF_ID (data.despatchAdvice.id)
-        private String status;   // <-- STATUS (data.despatchAdvice.status)
+        private String status;
     }
 }
