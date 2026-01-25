@@ -12,8 +12,8 @@ public class BootstrapDataSourceConfig {
 
     @Bean
     public DataSource dataSource() {
-//        String instance = SqlInstanceFileReader.readInstanceName();
-        String instance = "SRV2016\\INSOFT";
+        String instance = SqlInstanceFileReader.readInstanceName();
+//        String instance = "SRV2016\\INSOFT";
         String url = SqlServerUrlFactory.buildJdbcUrl(instance);
 
         DriverManagerDataSource ds = new DriverManagerDataSource();

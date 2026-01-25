@@ -40,12 +40,8 @@ public class EOtpremniceJob implements CommandLineRunner {
             DespatchAdviceType advice;
             try {
                 advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-            try {
-                XmlFileWriter.write(advice);
+                String pfdLocation = systblParamService.loadXmlLocation(idRacunar);
+                XmlFileWriter.write(advice, pfdLocation, entry.getRequestId());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

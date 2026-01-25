@@ -15,7 +15,7 @@ public class EoLogRepository {
 
     public List<EoLogEntry> findIDDOKs(String idFirme, String tipDokumenta, String idRacunar) {
         String sql =
-                "SELECT IDDOK " +
+                "SELECT IDDOK, RTRIM(RequestID) " +
                         "FROM dbo.eoLog " +
                         "WHERE IDFirme = ? " +
                         "  AND TipDokumenta = ? " +
@@ -25,7 +25,9 @@ public class EoLogRepository {
 
         return jdbc.query(
                 sql,
-                (rs, rowNum) -> new EoLogEntry(rs.getInt("IDDOK")),
+                (rs, rowNum) -> new EoLogEntry(
+                        rs.getInt("IDDOK"),
+                        rs.getString("RequestID")),
                 idFirme,
                 tipDokumenta,
                 idRacunar

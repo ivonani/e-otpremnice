@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 public class XmlFileWriter {
 
-    public static void write(DespatchAdviceType advice) throws Exception {
+    public static void write(DespatchAdviceType advice, String xmlLocation, String xmlName) throws Exception {
 
         JAXBContext context = JAXBContext.newInstance("oasis.names.specification.ubl.schema.xsd.despatchadvice_2");
         Marshaller marshaller = context.createMarshaller();
@@ -24,12 +24,9 @@ public class XmlFileWriter {
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new UblNamespacePrefixMapper());
 
         // 4. Write file
-        Path out = Paths.get(
-                System.getProperty("user.home"),
-                "Documents",
-                "InSoft",
-                "xml",
-                "despatch.xml"
+        Path out = Paths.get(xmlLocation,
+                xmlName,
+                ".xml"
         );
         Files.createDirectories(out.getParent());
 

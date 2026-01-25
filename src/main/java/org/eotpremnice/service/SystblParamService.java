@@ -25,4 +25,15 @@ public class SystblParamService {
 
         return new FirmaKey(idFirme.trim(), tipDokumenta.trim());
     }
+
+    public String loadXmlLocation(String idRacunar) {
+
+        String xmlLocation = repo.readNcharParam(455);
+
+        if (xmlLocation == null || xmlLocation.trim().isEmpty()) {
+            throw new IllegalStateException("XML location is empty for IDRacunar=" + idRacunar);
+        }
+
+        return xmlLocation;
+    }
 }

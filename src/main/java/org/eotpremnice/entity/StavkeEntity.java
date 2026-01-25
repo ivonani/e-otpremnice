@@ -37,7 +37,7 @@ public class StavkeEntity implements Serializable {
     @Convert(converter = StringTrimConverter.class)
     private String nazivArtikla;
 
-    @Column(name = "OpisArtikla")
+    @Column(name = "OpisArtikl")
     @Convert(converter = StringTrimConverter.class)
     private String opisArtikla;
 
