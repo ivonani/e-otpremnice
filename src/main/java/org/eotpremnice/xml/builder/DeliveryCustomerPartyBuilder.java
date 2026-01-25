@@ -25,8 +25,7 @@ public class DeliveryCustomerPartyBuilder {
         if (kupac.getJbkjs() != null) {
             PartyIdentificationType pid = new PartyIdentificationType();
             IDType id = new IDType();
-            id.setValue(kupac.getJbkjs());
-            id.setSchemeID("9948");
+            id.setValue("JBKJS:"+kupac.getJbkjs());
             pid.setID(id);
             party.getPartyIdentification().add(pid);
         }

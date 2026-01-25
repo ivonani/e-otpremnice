@@ -311,8 +311,7 @@ public final class ShipmentBuilder {
         if (p.getJbkjs() != null) {
             PartyIdentificationType pid = new PartyIdentificationType();
             IDType id = new IDType();
-            id.setSchemeID(SCHEME_ID_9948);
-            id.setValue(p.getJbkjs());
+            id.setValue("JBKJS:"+p.getJbkjs());
             pid.setID(id);
             party.getPartyIdentification().add(pid);
         }
