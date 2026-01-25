@@ -39,6 +39,7 @@ public class EOtpremniceJob implements CommandLineRunner {
     private final SemaforService semaforService;
 
     private final static String DOCUMENT_REQUEST_SUCCEEDED = "DocumentRequest.Succeeded";
+    private final static String DOCUMENT_REQUEST_PENDING = "DocumentRequest.Pending";
 
     @Override
     public void run(String... args) {
@@ -69,12 +70,24 @@ public class EOtpremniceJob implements CommandLineRunner {
                             ResponseEntity<String> getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), today, entry.getRequestId());
                             String json = getResp.getBody();
 
+                            SupplierChangesResponse parsed;
+                            SupplierChangesResponse.Item item0;
+                            SupplierChangesResponse.DataBlock data;
+
                             if (HttpStatus.OK.equals(getResp.getStatusCode())) {
 
-                                SupplierChangesResponse parsed = sefClient.parseChanges(objectMapper, json);
+                                parsed = sefClient.parseChanges(objectMapper, json);
 
-                                SupplierChangesResponse.Item item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
-                                SupplierChangesResponse.DataBlock data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
+                                item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
+                                data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
+
+                                if (item0 != null && DOCUMENT_REQUEST_PENDING.equals(item0.getType())) {
+                                    Thread.sleep(10000);
+                                    parsed = sefClient.parseChanges(objectMapper, json);
+
+                                    item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
+                                    data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
+                                }
 
                                 if (item0 != null && DOCUMENT_REQUEST_SUCCEEDED.equals(item0.getType())) {
 
