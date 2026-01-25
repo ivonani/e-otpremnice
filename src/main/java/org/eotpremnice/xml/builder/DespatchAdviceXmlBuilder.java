@@ -82,10 +82,14 @@ public class DespatchAdviceXmlBuilder {
         }
 
         Posiljalac posiljalac = firmaService.loadPosiljalac(idFirme, tipDokumenta);
-        advice.setDespatchSupplierParty(DispatchSupplierPartyBuilder.build(posiljalac));
+        if (posiljalac != null) {
+            advice.setDespatchSupplierParty(DispatchSupplierPartyBuilder.build(posiljalac));
+        }
 
         Kupac kupac = kupacService.loadKupac(idFirme, tipDokumenta, iddok);
-        advice.setDeliveryCustomerParty(DeliveryCustomerPartyBuilder.build(kupac));
+        if (kupac != null) {
+            advice.setDeliveryCustomerParty(DeliveryCustomerPartyBuilder.build(kupac));
+        }
 
         Isporuka isporuka = isporukaService.loadIsporuka(idFirme, tipDokumenta, iddok);
         Prevoznik prevoznik = prevoznikService.loadPrevoznik(idFirme, tipDokumenta, iddok);

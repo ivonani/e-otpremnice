@@ -8,6 +8,7 @@ import org.eotpremnice.utils.XmlDates;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static org.eotpremnice.utils.XmlBuilderUtils.notBlank;
 
@@ -24,51 +25,51 @@ public final class ShipmentBuilder {
             Odrediste odrediste,
             Otpremnice otpremnice,
             Magacin magacin) {
-        if (isporuka == null)
-            return null;
 
         ShipmentType shipment = new ShipmentType();
 
         // cbc:ID
-        if (isporuka.getBroj() != null) {
-            IDType id = new IDType();
-            id.setValue(isporuka.getBroj());
-            shipment.setID(id);
-        }
-
-        // cbc:GrossWeightMeasure @unitCode
-        if (isporuka.getTezina() != null) {
-            GrossWeightMeasureType gw = new GrossWeightMeasureType();
-            gw.setValue(isporuka.getTezina());
-            if (isporuka.getTezinaJM() != null) {
-                gw.setUnitCode(isporuka.getTezinaJM()); // "KGM" ili "LTN"
+        if (Objects.nonNull(isporuka)) {
+            if (isporuka.getBroj() != null) {
+                IDType id = new IDType();
+                id.setValue(isporuka.getBroj());
+                shipment.setID(id);
             }
-            shipment.setGrossWeightMeasure(gw);
-        }
 
-        // cbc:GrossVolumeMeasure @unitCode
-        if (isporuka.getZapremina() != null) {
-            GrossVolumeMeasureType gv = new GrossVolumeMeasureType();
-            gv.setValue(isporuka.getZapremina());
-            if (isporuka.getZapreminaJM() != null) {
-                gv.setUnitCode(isporuka.getZapreminaJM()); // "MTQ"
+            // cbc:GrossWeightMeasure @unitCode
+            if (isporuka.getTezina() != null) {
+                GrossWeightMeasureType gw = new GrossWeightMeasureType();
+                gw.setValue(isporuka.getTezina());
+                if (isporuka.getTezinaJM() != null) {
+                    gw.setUnitCode(isporuka.getTezinaJM()); // "KGM" ili "LTN"
+                }
+                shipment.setGrossWeightMeasure(gw);
             }
-            shipment.setGrossVolumeMeasure(gv);
-        }
 
-        // cbc:TotalTransportHandlingUnitQuantity
-        if (isporuka.getBrPaketa() != null) {
-            TotalTransportHandlingUnitQuantityType qty = new TotalTransportHandlingUnitQuantityType();
-            // u UBL JAXB obično je BigDecimal
-            qty.setValue(BigDecimal.valueOf(isporuka.getBrPaketa().longValue()));
-            shipment.setTotalTransportHandlingUnitQuantity(qty);
-        }
+            // cbc:GrossVolumeMeasure @unitCode
+            if (isporuka.getZapremina() != null) {
+                GrossVolumeMeasureType gv = new GrossVolumeMeasureType();
+                gv.setValue(isporuka.getZapremina());
+                if (isporuka.getZapreminaJM() != null) {
+                    gv.setUnitCode(isporuka.getZapreminaJM()); // "MTQ"
+                }
+                shipment.setGrossVolumeMeasure(gv);
+            }
 
-        // cbc:DeliveryInstructions
-        if (isporuka.getNapIsporuke() != null) {
-            DeliveryInstructionsType di = new DeliveryInstructionsType();
-            di.setValue(isporuka.getNapIsporuke());
-            shipment.getDeliveryInstructions().add(di);
+            // cbc:TotalTransportHandlingUnitQuantity
+            if (isporuka.getBrPaketa() != null) {
+                TotalTransportHandlingUnitQuantityType qty = new TotalTransportHandlingUnitQuantityType();
+                // u UBL JAXB obično je BigDecimal
+                qty.setValue(BigDecimal.valueOf(isporuka.getBrPaketa().longValue()));
+                shipment.setTotalTransportHandlingUnitQuantity(qty);
+            }
+
+            // cbc:DeliveryInstructions
+            if (isporuka.getNapIsporuke() != null) {
+                DeliveryInstructionsType di = new DeliveryInstructionsType();
+                di.setValue(isporuka.getNapIsporuke());
+                shipment.getDeliveryInstructions().add(di);
+            }
         }
 
         ShipmentStageType stage = new ShipmentStageType();
