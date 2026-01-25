@@ -8,6 +8,7 @@ import org.eotpremnice.repository.EoLogEntryRepository;
 import org.eotpremnice.repository.EoLogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.eotpremnice.model.FirmaKey;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,65 +25,41 @@ public class EoLogService {
     }
 
     @Transactional
-    public void updateAfterSuccess(
-            String idFirme,
-            String tipDokumenta,
+    public void updateLog(
+            FirmaKey key,
             Integer iddok,
+            Integer zaSlanje,
+            Integer otpremljen,
+            Integer idError,
             String sefId,
             String status,
-            String fullJsonResponse
+            String fullJsonResponse,
+            LocalDateTime datumOtpreme
     ) {
         LogEntity e = repository.findById(
                         LogEntityId.builder()
-                                .iDFirme(idFirme)
-                                .tipDokumenta(tipDokumenta)
+                                .iDFirme(key.getIdFirme())
+                                .tipDokumenta(key.getTipDokumenta())
                                 .iddok(iddok)
                                 .build()
                 )
                 .orElseThrow(() -> new IllegalStateException(
-                        "eoLog not found for key: " + idFirme + "/" + tipDokumenta + "/" + iddok
+                        "eoLog not found for key: " + key.getIdFirme() + "/" + key.getTipDokumenta() + "/" + iddok
                 ));
 
-        // prema slajdu:
-        e.setZaSlanje(0);
-        e.setOtpremljen(1);
+        e.setZaSlanje(zaSlanje);
+        e.setOtpremljen(otpremljen);
 
-        // ako su ti u bazi DATE/DATETIME:
         e.setDatumSlanja(LocalDateTime.now());
-        e.setDatumOtpreme(LocalDateTime.now());
+        e.setDatumOtpreme(datumOtpreme);
 
-        e.setIdError(200);
+        e.setIdError(idError);
 
         e.setSefId(sefId);
         e.setResponseStatus(fullJsonResponse);
         e.setStatus(status);
 
         e.setIdRacunar(null);
-
-        repository.save(e);
-    }
-
-    @Transactional
-    public void updateAfterFailure(
-            String idFirme,
-            String tipDokumenta,
-            Integer iddok,
-            Integer errorCode,
-            String errorText
-    ) {
-        LogEntity e = repository.findById(
-                        LogEntityId.builder()
-                                .iDFirme(idFirme)
-                                .tipDokumenta(tipDokumenta)
-                                .iddok(iddok)
-                                .build()
-                )
-                .orElseThrow(() -> new IllegalStateException(
-                        "eoLog not found for key: " + idFirme + "/" + tipDokumenta + "/" + iddok
-                ));
-
-        e.setIdError(errorCode);
-        e.setResponseStatus(errorText);
 
         repository.save(e);
     }

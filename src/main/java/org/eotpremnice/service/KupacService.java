@@ -26,9 +26,7 @@ public class KupacService {
                 .build();
         KupacEntity kupac = repository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Kupac not found: IDFirme=" + idFirme + ", TipDokumenta=" + tipDokumenta + ", IDDok=" + idDok
-                ));
+                .orElse(null);
 
         return mapper.toModel(kupac);
     }

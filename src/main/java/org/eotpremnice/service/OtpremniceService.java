@@ -27,7 +27,7 @@ public class OtpremniceService {
 
         OtpremniceEntity entity = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Otpremnica not found: IDFirme=" + idFirme + ", TipDokumenta=" + tipDokumenta + ", IDDok=" + idDok
+                        "Nepravilni podaci u tabeli Otpremnice: IDFirme=" + idFirme + ", TipDokumenta=" + tipDokumenta + ", IDDok=" + idDok
                 ));
 
         return mapper.toModel(entity);

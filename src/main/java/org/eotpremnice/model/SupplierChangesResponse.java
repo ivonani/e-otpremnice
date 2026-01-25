@@ -30,8 +30,7 @@ public class SupplierChangesResponse {
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DespatchAdvice {
-        private String id;       // <-- SEF_ID (data.despatchAdvice.id)
+        private String documentId;       // <-- SEF_ID (data.despatchAdvice.id)
         private String status;   // <-- STATUS (data.despatchAdvice.status)
-        private String documentNumber;
     }
 }

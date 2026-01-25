@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class SefClient {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setAccept(java.util.Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Api-key", apiKey);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -51,8 +52,8 @@ public class SefClient {
                 .toUriString();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("accept", "text/plain");
-        headers.set("Api-key", file); // Parametri.File = API key
+        headers.set("Api-key", file);
+        headers.setAccept(Collections.singletonList(MediaType.TEXT_PLAIN));
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);

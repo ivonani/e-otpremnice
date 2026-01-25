@@ -26,7 +26,7 @@ public class FirmaService {
         FirmaEntity firma = repository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Firma not found: IDFirme=" + idFirme + ", TipDokumenta=" + tipDokumenta
+                        "Nepravilni podaci u tabeli Firma: IDFirme=" + idFirme + ", TipDokumenta=" + tipDokumenta
                 ));
 
         return mapper.toModel(firma);

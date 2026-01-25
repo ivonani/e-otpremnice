@@ -2,12 +2,19 @@ package org.eotpremnice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class HttpClientConfig {
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        SimpleClientHttpRequestFactory factory =
+                new SimpleClientHttpRequestFactory();
+
+        factory.setConnectTimeout(60_000); // 1 min
+        factory.setReadTimeout(60_000);    // 1 min
+
+        return new RestTemplate(factory);
     }
 }
