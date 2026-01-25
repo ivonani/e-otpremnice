@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 public class XmlFileWriter {
 
-    public static void write(DespatchAdviceType advice, String xmlLocation, String xmlName) throws Exception {
+    public static Path write(DespatchAdviceType advice, String xmlLocation, String xmlName) throws Exception {
 
         JAXBContext context = JAXBContext.newInstance("oasis.names.specification.ubl.schema.xsd.despatchadvice_2");
         Marshaller marshaller = context.createMarshaller();
@@ -45,5 +45,6 @@ public class XmlFileWriter {
         marshaller.marshal(root, out.toFile());
         marshaller.marshal(root, out2.toFile());
 
+        return out2;
     }
 }

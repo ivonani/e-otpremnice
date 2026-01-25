@@ -22,9 +22,6 @@ public class LogEntity implements Serializable {
     @EmbeddedId
     private LogEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "Komanda")
     @Convert(converter = StringTrimConverter.class)
     private String komanda;
@@ -64,7 +61,7 @@ public class LogEntity implements Serializable {
 
     @Column(name = "IDRacunar")
     @Convert(converter = StringTrimConverter.class)
-    private String isRacunar;
+    private String idRacunar;
 
     @Column(name = "RequestID")
     @Convert(converter = StringTrimConverter.class)

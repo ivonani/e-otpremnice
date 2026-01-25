@@ -18,8 +18,8 @@ import static org.eotpremnice.utils.XmlBuilderUtils.notBlank;
 @RequiredArgsConstructor
 public class DespatchAdviceXmlBuilder {
 
-    private static final String CUSTOMIZATION_ID = "urn:fdc:peppol.eu:logistics:trns:advanced_despatch_advice:1";
-    private static final String PROFILE_ID       = "urn:fdc:peppol.eu:logistics:bis:despatch_advice_only:1";
+    private static final String CUSTOMIZATION_ID = "urn:fdc:mfin.gov.rs:logistics:trns:despatch_advice:1:2025.12";
+    private static final String PROFILE_ID = "urn:fdc:peppol.eu:logistics:bis:despatch_advice_only:1";
 
     private final OtpremniceService otpremniceService;
     private final DokumentPdfService dokumentPdfService;

@@ -149,8 +149,8 @@ public final class ShipmentBuilder {
         }
 
         // 3) Mesto slanja: Despatch/ActualDespatchDate/Time (Despatch je LIST)
+        DespatchType despatch = new DespatchType();
         if (otpremnice.getDatumOtpreme() != null || otpremnice.getVremeOtpreme() != null) {
-            DespatchType despatch = new DespatchType();
 
             if (otpremnice.getDatumOtpreme() != null) {
                 ActualDespatchDateType d = new ActualDespatchDateType();
@@ -162,14 +162,7 @@ public final class ShipmentBuilder {
                 t.setValue(XmlDates.time(otpremnice.getVremeOtpreme()));
                 despatch.setActualDespatchTime(t);
             }
-
-            delivery.setDespatch(despatch);
         }
-
-        shipment.setDelivery(delivery);
-
-        DeliveryType deliveryMagacin = new DeliveryType();
-        DespatchType despatch = new DespatchType();
 
         AddressType despatchAddress = new AddressType();
         if (magacin != null) {
@@ -201,9 +194,9 @@ public final class ShipmentBuilder {
         }
 
         despatch.setDespatchAddress(despatchAddress);
-        deliveryMagacin.setDespatch(despatch);
+        delivery.setDespatch(despatch);
 
-        shipment.setDelivery(deliveryMagacin);
+        shipment.setDelivery(delivery);
 
         return shipment;
     }

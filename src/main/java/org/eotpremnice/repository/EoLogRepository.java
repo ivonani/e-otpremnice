@@ -1,36 +1,12 @@
 package org.eotpremnice.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.eotpremnice.model.EoLogEntry;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.eotpremnice.entity.LogEntity;
+import org.eotpremnice.entity.id.LogEntityId;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-@RequiredArgsConstructor
-public class EoLogRepository {
+public interface EoLogRepository extends JpaRepository<LogEntity, LogEntityId> {
 
-    private final JdbcTemplate jdbc;
 
-    public List<EoLogEntry> findIDDOKs(String idFirme, String tipDokumenta, String idRacunar) {
-        String sql =
-                "SELECT IDDOK, RTRIM(RequestID) as RequestID " +
-                        "FROM dbo.eoLog " +
-                        "WHERE IDFirme = ? " +
-                        "  AND TipDokumenta = ? " +
-                        "  AND IDRacunar = ? " +
-                        "  AND ZaSlanje = 1 " +
-                        "  AND Komanda = 'SEND_EO'";
-
-        return jdbc.query(
-                sql,
-                (rs, rowNum) -> new EoLogEntry(
-                        rs.getInt("IDDOK"),
-                        rs.getString("RequestID")),
-                idFirme,
-                tipDokumenta,
-                idRacunar
-        );
-    }
 }
