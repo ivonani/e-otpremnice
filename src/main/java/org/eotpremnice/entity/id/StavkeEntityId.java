@@ -25,4 +25,11 @@ public class StavkeEntityId implements Serializable {
     @Column(name = "TipDokumenta")
     @Convert(converter = StringTrimConverter.class)
     private String tipDokumenta;
+
+    @Column(name = "IDDOK")
+    private Integer iddok;
+
+    @Column(name = "Rbr")
+    private Integer rBr;
+
 }

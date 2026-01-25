@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
 import org.eotpremnice.entity.id.StavkeEntityId;
-import org.eotpremnice.entity.id.VozacEntityId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,12 +21,6 @@ public class StavkeEntity implements Serializable {
 
     @EmbeddedId
     private StavkeEntityId id;
-
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
-    @Column(name = "Rbr")
-    private Integer rBr;
 
     @Column(name = "Kolicina")
     private BigDecimal kolicina;

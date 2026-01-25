@@ -11,7 +11,8 @@ import org.eotpremnice.service.*;
 import org.eotpremnice.utils.XmlDates;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.time.LocalDate;
+
+import static org.eotpremnice.utils.XmlBuilderUtils.notBlank;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class DespatchAdviceXmlBuilder {
     private final KurirService kurirService;
     private final OdredisteService odredisteService;
     private final MagacinService magacinService;
+    private final StavkeService stavkeService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -37,25 +39,32 @@ public class DespatchAdviceXmlBuilder {
         Otpremnice otpremnice = otpremniceService.loadOtpremnice(idFirme, tipDokumenta, iddok);
         advice.setUBLExtensions(UBLExtensionBuilder.build(otpremnice));
 
-        advice.setCustomizationID(cbcCustomizationId(CUSTOMIZATION_ID));
+        CustomizationIDType customizationIDType = new CustomizationIDType();
+        customizationIDType.setValue(CUSTOMIZATION_ID);
+        advice.setCustomizationID(customizationIDType);
 
-        // 3) ProfileID
-        advice.setProfileID(cbcProfileId(PROFILE_ID));
+        ProfileIDType profileIDType = new ProfileIDType();
+        profileIDType.setValue(PROFILE_ID);
+        advice.setProfileID(profileIDType);
 
-        // 4) ID <- BrDok
-        advice.setID(cbcId(required(otpremnice.getBrDok(), "BrDok")));
+        advice.setID(cbcId(otpremnice.getBrDok()));
 
-        // 5) IssueDate
-        advice.setIssueDate(cbcIssueDate(required(otpremnice.getDatumIzdavanja(), "DatumIzdavanja")));
+        IssueDateType issueDateType = new IssueDateType();
+        issueDateType.setValue(XmlDates.date(otpremnice.getDatumIzdavanja()));
+        advice.setIssueDate(issueDateType);
 
         // 6) DespatchAdviceTypeCode <- TipOtpremnice
         if (notBlank(otpremnice.getTipOtpremnice())) {
-            advice.setDespatchAdviceTypeCode(cbcDespatchAdviceTypeCode(otpremnice.getTipOtpremnice()));
+            DespatchAdviceTypeCodeType despatchAdviceTypeCodeType = new DespatchAdviceTypeCodeType();
+            despatchAdviceTypeCodeType.setValue(otpremnice.getTipOtpremnice());
+            advice.setDespatchAdviceTypeCode(despatchAdviceTypeCodeType);
         }
 
         // 7) Note <- NapOpsta (0..n)
         if (notBlank(otpremnice.getNapOpsta())) {
-            advice.getNote().add(cbcNote(otpremnice.getNapOpsta()));
+            NoteType noteType = new NoteType();
+            noteType.setValue(otpremnice.getNapOpsta());
+            advice.getNote().add(noteType);
         }
 
         // 8) OrderReference/cbc:ID <- IDNarudzbenice
@@ -86,65 +95,18 @@ public class DespatchAdviceXmlBuilder {
         Magacin magacin = magacinService.loadMagacin(idFirme, tipDokumenta, iddok);
         advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik, vozac, kurir,
                 odrediste, otpremnice, magacin));
+
+        List<Stavke> stavke = stavkeService.loadStavke(idFirme, tipDokumenta, iddok);
+        if (!stavke.isEmpty()) {
+            advice.getDespatchLine().addAll(DespatchLineBuilder.build(stavke));
+        }
         return advice;
 
-    }
-
-    // -----------------------
-    // Helper CBC builders
-    // -----------------------
-
-    private static CustomizationIDType cbcCustomizationId(String value) {
-        CustomizationIDType t = new CustomizationIDType();
-        t.setValue(value);
-        return t;
-    }
-
-    private static ProfileIDType cbcProfileId(String value) {
-        ProfileIDType t = new ProfileIDType();
-        t.setValue(value);
-        return t;
     }
 
     private static IDType cbcId(String value) {
         IDType t = new IDType();
         t.setValue(value);
         return t;
-    }
-
-    private static DespatchAdviceTypeCodeType cbcDespatchAdviceTypeCode(String value) {
-        DespatchAdviceTypeCodeType t = new DespatchAdviceTypeCodeType();
-        t.setValue(value);
-        return t;
-    }
-
-    private static NoteType cbcNote(String value) {
-        NoteType t = new NoteType();
-        t.setValue(value);
-        return t;
-    }
-
-    private static IssueDateType cbcIssueDate(LocalDate date) {
-        IssueDateType t = new IssueDateType();
-        t.setValue(XmlDates.date(date));
-        return t;
-    }
-
-    // -----------------------
-    // small helpers
-    // -----------------------
-
-    private static boolean notBlank(String s) {
-        return s != null && !s.trim().isEmpty();
-    }
-
-    private static <T> T required(T v, String field) {
-        if (v == null) throw new IllegalArgumentException("Missing required field: " + field);
-        return v;
-    }
-
-    private static String required(String v, String field) {
-        if (!notBlank(v)) throw new IllegalArgumentException("Missing required field: " + field);
-        return v.trim();
     }
 }

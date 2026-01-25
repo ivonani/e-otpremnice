@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+import static org.eotpremnice.utils.XmlBuilderUtils.notBlank;
+
 @Component
 @NoArgsConstructor
 public final class ShipmentBuilder {
@@ -250,9 +252,6 @@ public final class ShipmentBuilder {
             c.setElectronicMail(mail);
             p.setContact(c);
         }
-
-        // Telefon NE popunjavaš (po specifikaciji)
-
         return p;
     }
 
@@ -405,9 +404,5 @@ public final class ShipmentBuilder {
         addr.setCountry(country);
 
         return addr;
-    }
-
-    private static boolean notBlank(String s) {
-        return s != null && !s.trim().isEmpty();
     }
 }

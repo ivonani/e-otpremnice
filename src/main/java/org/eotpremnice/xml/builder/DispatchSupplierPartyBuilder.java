@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
 
+import static org.eotpremnice.utils.XmlBuilderUtils.notBlank;
+
 @Component
 public class DispatchSupplierPartyBuilder {
 
@@ -112,10 +114,6 @@ public class DispatchSupplierPartyBuilder {
 
         supplierParty.setParty(party);
         return supplierParty;
-    }
-
-    private static boolean notBlank(String s) {
-        return s != null && !s.trim().isEmpty();
     }
 
 }
