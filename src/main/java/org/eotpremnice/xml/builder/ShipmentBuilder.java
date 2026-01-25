@@ -74,7 +74,6 @@ public final class ShipmentBuilder {
         ShipmentStageType stage = new ShipmentStageType();
         if (prevoznik != null) {
             stage.getCarrierParty().add(buildCarrierParty(prevoznik));
-            shipment.getShipmentStage().add(stage);
         }
 
         // DriverPerson (vozač)
