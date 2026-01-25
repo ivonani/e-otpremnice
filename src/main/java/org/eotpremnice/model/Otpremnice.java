@@ -3,7 +3,7 @@ package org.eotpremnice.model;
 import lombok.Value;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalTime;
 
 @Value
 public class Otpremnice {
@@ -16,4 +16,10 @@ public class Otpremnice {
     String tipOtpremnice;     // varchar(3)
     String napOpsta;          // nvarchar(max)
     String idNarudzbenice;    // varchar(20)
+
+    LocalDate datumKraj;
+    LocalTime vremeKraj;
+    LocalDate datumOtpreme;
+    LocalTime vremeOtpreme;
+
 }

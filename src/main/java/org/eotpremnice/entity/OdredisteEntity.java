@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eotpremnice.entity.converter.StringTrimConverter;
-import org.eotpremnice.entity.id.MagacinEntityId;
 import org.eotpremnice.entity.id.OdredisteEntityId;
 
 import javax.persistence.*;
@@ -21,9 +20,6 @@ public class OdredisteEntity implements Serializable {
 
     @EmbeddedId
     private OdredisteEntityId id;
-
-    @Column(name = "IDDOK")
-    private Integer iddok;
 
     @Column(name = "Adresa")
     @Convert(converter = StringTrimConverter.class)

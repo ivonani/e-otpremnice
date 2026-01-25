@@ -1,0 +1,18 @@
+package org.eotpremnice.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+public class Odrediste {
+
+    private String adresa;
+    private String mesto;
+    private String zip;
+    private String drzava;
+}

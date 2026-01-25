@@ -3,10 +3,8 @@ package org.eotpremnice.xml.builder;
 import lombok.NoArgsConstructor;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
-import org.eotpremnice.model.Isporuka;
-import org.eotpremnice.model.Kurir;
-import org.eotpremnice.model.Prevoznik;
-import org.eotpremnice.model.Vozac;
+import org.eotpremnice.model.*;
+import org.eotpremnice.utils.XmlDates;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -20,7 +18,9 @@ public final class ShipmentBuilder {
 
     public static ShipmentType build(
             Isporuka isporuka, Prevoznik prevoznik,
-            Vozac vozac, Kurir kurir) {
+            Vozac vozac, Kurir kurir,
+            Odrediste odrediste,
+            Otpremnice otpremnice) {
         if (isporuka == null)
             return null;
 
@@ -90,6 +90,81 @@ public final class ShipmentBuilder {
         }
 
         shipment.getShipmentStage().add(stage);
+
+        DeliveryType delivery = new DeliveryType();
+
+        // 1) Odredište: DeliveryAddress
+        if (odrediste != null) {
+            AddressType addr = new AddressType();
+
+            if (odrediste.getAdresa() != null) {
+                StreetNameType street = new StreetNameType();
+                street.setValue(odrediste.getAdresa());
+                addr.setStreetName(street);
+            }
+
+            if (odrediste.getMesto() != null) {
+                CityNameType city = new CityNameType();
+                city.setValue(odrediste.getMesto());
+                addr.setCityName(city);
+            }
+
+            if (odrediste.getZip() != null) {
+                PostalZoneType pz = new PostalZoneType();
+                pz.setValue(odrediste.getZip());
+                addr.setPostalZone(pz);
+            }
+
+            // Country/IdentificationCode = RS (ili iz baze)
+            if (odrediste.getDrzava() != null) {
+                CountryType c = new CountryType();
+                IdentificationCodeType code = new IdentificationCodeType();
+                code.setValue(odrediste.getDrzava());
+                c.setIdentificationCode(code);
+                addr.setCountry(c);
+            }
+
+            delivery.setDeliveryAddress(addr);
+        }
+
+        // 2) Odredište: EstimatedDeliveryPeriod EndDate/EndTime
+        if (otpremnice.getDatumKraj() != null || otpremnice.getVremeKraj() != null) {
+            PeriodType p = new PeriodType();
+
+            if (otpremnice.getDatumKraj() != null) {
+                EndDateType ed = new EndDateType();
+                ed.setValue(XmlDates.date(otpremnice.getDatumKraj()));
+                p.setEndDate(ed);
+            }
+            if (otpremnice.getVremeKraj() != null) {
+                EndTimeType et = new EndTimeType();
+                et.setValue(XmlDates.time(otpremnice.getVremeKraj()));
+                p.setEndTime(et);
+            }
+
+            delivery.setEstimatedDeliveryPeriod(p);
+        }
+
+        // 3) Mesto slanja: Despatch/ActualDespatchDate/Time (Despatch je LIST)
+        if (otpremnice.getDatumOtpreme() != null || otpremnice.getVremeOtpreme() != null) {
+            DespatchType despatch = new DespatchType();
+
+            if (otpremnice.getDatumOtpreme() != null) {
+                ActualDespatchDateType d = new ActualDespatchDateType();
+                d.setValue(XmlDates.date(otpremnice.getDatumOtpreme()));
+                despatch.setActualDespatchDate(d);
+            }
+            if (otpremnice.getVremeOtpreme() != null) {
+                ActualDespatchTimeType t = new ActualDespatchTimeType();
+                t.setValue(XmlDates.time(otpremnice.getVremeOtpreme()));
+                despatch.setActualDespatchTime(t);
+            }
+
+            delivery.setDespatch(despatch);
+        }
+
+        // ubaci delivery u shipment
+        shipment.setDelivery(delivery);
 
         return shipment;
     }

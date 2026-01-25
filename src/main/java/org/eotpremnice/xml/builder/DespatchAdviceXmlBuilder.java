@@ -8,12 +8,8 @@ import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceT
 
 import org.eotpremnice.model.*;
 import org.eotpremnice.service.*;
+import org.eotpremnice.utils.XmlDates;
 import org.springframework.stereotype.Component;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -32,6 +28,7 @@ public class DespatchAdviceXmlBuilder {
     private final PrevoznikService prevoznikService;
     private final VozacService vozacService;
     private final KurirService kurirService;
+    private final OdredisteService odredisteService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -84,7 +81,9 @@ public class DespatchAdviceXmlBuilder {
         Prevoznik prevoznik = prevoznikService.loadPrevoznik(idFirme, tipDokumenta, iddok);
         Vozac vozac = vozacService.loadVozac(idFirme, tipDokumenta, iddok);
         Kurir kurir = kurirService.loadKurir(idFirme, tipDokumenta, iddok);
-        advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik, vozac, kurir));
+        Odrediste odrediste = odredisteService.loadOdrediste(idFirme, tipDokumenta, iddok);
+        advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik, vozac, kurir,
+                odrediste, otpremnice));
         return advice;
 
     }
@@ -123,20 +122,10 @@ public class DespatchAdviceXmlBuilder {
         return t;
     }
 
-    private static IssueDateType cbcIssueDate(LocalDate date) throws Exception {
+    private static IssueDateType cbcIssueDate(LocalDate date) {
         IssueDateType t = new IssueDateType();
-        t.setValue(toXmlDate(date));
+        t.setValue(XmlDates.date(date));
         return t;
-    }
-
-    public static XMLGregorianCalendar toXmlDate(LocalDate date) throws DatatypeConfigurationException {
-        return DatatypeFactory.newInstance()
-                .newXMLGregorianCalendarDate(
-                        date.getYear(),
-                        date.getMonthValue(),
-                        date.getDayOfMonth(),
-                        DatatypeConstants.FIELD_UNDEFINED // ← NO timezone
-                );
     }
 
     // -----------------------
