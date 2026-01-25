@@ -21,9 +21,6 @@ public class MagacinEntity implements Serializable {
     @EmbeddedId
     private MagacinEntityId id;
 
-    @Column(name = "IDDOK")
-    private Integer iddok;
-
     @Column(name = "Adresa")
     @Convert(converter = StringTrimConverter.class)
     private String adresa;

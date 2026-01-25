@@ -20,7 +20,8 @@ public final class ShipmentBuilder {
             Isporuka isporuka, Prevoznik prevoznik,
             Vozac vozac, Kurir kurir,
             Odrediste odrediste,
-            Otpremnice otpremnice) {
+            Otpremnice otpremnice,
+            Magacin magacin) {
         if (isporuka == null)
             return null;
 
@@ -163,8 +164,44 @@ public final class ShipmentBuilder {
             delivery.setDespatch(despatch);
         }
 
-        // ubaci delivery u shipment
         shipment.setDelivery(delivery);
+
+        DeliveryType deliveryMagacin = new DeliveryType();
+        DespatchType despatch = new DespatchType();
+
+        AddressType despatchAddress = new AddressType();
+        if (magacin != null) {
+            if (notBlank(magacin.getAdresa())) {
+                StreetNameType s = new StreetNameType();
+                s.setValue(magacin.getAdresa());
+                despatchAddress.setStreetName(s);
+            }
+
+            if (notBlank(magacin.getMesto())) {
+                CityNameType c = new CityNameType();
+                c.setValue(magacin.getMesto());
+                despatchAddress.setCityName(c);
+            }
+
+            if (notBlank(magacin.getZip())) {
+                PostalZoneType p = new PostalZoneType();
+                p.setValue(magacin.getZip());
+                despatchAddress.setPostalZone(p);
+            }
+
+            if (notBlank(magacin.getDrzava())) {
+                CountryType country = new CountryType();
+                IdentificationCodeType code = new IdentificationCodeType();
+                code.setValue(magacin.getDrzava());
+                country.setIdentificationCode(code);
+                despatchAddress.setCountry(country);
+            }
+        }
+
+        despatch.setDespatchAddress(despatchAddress);
+        deliveryMagacin.setDespatch(despatch);
+
+        shipment.setDelivery(deliveryMagacin);
 
         return shipment;
     }
@@ -368,5 +405,9 @@ public final class ShipmentBuilder {
         addr.setCountry(country);
 
         return addr;
+    }
+
+    private static boolean notBlank(String s) {
+        return s != null && !s.trim().isEmpty();
     }
 }

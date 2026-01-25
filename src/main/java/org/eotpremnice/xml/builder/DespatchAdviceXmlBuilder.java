@@ -29,6 +29,7 @@ public class DespatchAdviceXmlBuilder {
     private final VozacService vozacService;
     private final KurirService kurirService;
     private final OdredisteService odredisteService;
+    private final MagacinService magacinService;
 
     public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
 
@@ -38,13 +39,13 @@ public class DespatchAdviceXmlBuilder {
 
         advice.setCustomizationID(cbcCustomizationId(CUSTOMIZATION_ID));
 
-        // 3) ProfileID (FIXNO)
+        // 3) ProfileID
         advice.setProfileID(cbcProfileId(PROFILE_ID));
 
         // 4) ID <- BrDok
         advice.setID(cbcId(required(otpremnice.getBrDok(), "BrDok")));
 
-        // 5) IssueDate <- DatumIzdavanja
+        // 5) IssueDate
         advice.setIssueDate(cbcIssueDate(required(otpremnice.getDatumIzdavanja(), "DatumIzdavanja")));
 
         // 6) DespatchAdviceTypeCode <- TipOtpremnice
@@ -82,8 +83,9 @@ public class DespatchAdviceXmlBuilder {
         Vozac vozac = vozacService.loadVozac(idFirme, tipDokumenta, iddok);
         Kurir kurir = kurirService.loadKurir(idFirme, tipDokumenta, iddok);
         Odrediste odrediste = odredisteService.loadOdrediste(idFirme, tipDokumenta, iddok);
+        Magacin magacin = magacinService.loadMagacin(idFirme, tipDokumenta, iddok);
         advice.setShipment(ShipmentBuilder.build(isporuka, prevoznik, vozac, kurir,
-                odrediste, otpremnice));
+                odrediste, otpremnice, magacin));
         return advice;
 
     }
