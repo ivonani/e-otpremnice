@@ -30,7 +30,7 @@ public class DispatchSupplierPartyBuilder {
             PartyIdentificationType pid = new PartyIdentificationType();
             IDType id = new IDType();
             id.setValue(posiljalac.getJbkjs());
-            id.setSchemeID("JBKJS");
+            id.setSchemeID(SCHEME_9948);
             pid.setID(id);
             party.getPartyIdentification().add(pid);
         }
