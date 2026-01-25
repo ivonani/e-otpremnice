@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface StavkeRepository extends JpaRepository<StavkeEntity, StavkeEntityId> {
 
-    List<StavkeEntity> findByIdIDFirmeAndIdTipDokumentaAndIdIddok(
+    List<StavkeEntity> indByIdIDFirmeAndIdTipDokumentaAndIdIddok(
             String idFirme, String tipDokumenta, Long iddok
     );
 }

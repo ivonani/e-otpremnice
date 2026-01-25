@@ -18,7 +18,7 @@ public class StavkeService {
 
     public List<Stavke> loadStavke(String idFirme, String tipDokumenta, Long iddok) {
         return stavkeRepository
-                .findByIdIDFirmeAndIdTipDokumentaAndIdIddok(idFirme, tipDokumenta, iddok)
+                .indByIdIDFirmeAndIdTipDokumentaAndIdIddok(idFirme, tipDokumenta, iddok)
                 .stream()
                 .map(stavkeMapper::toModel)
                 .collect(Collectors.toList());
