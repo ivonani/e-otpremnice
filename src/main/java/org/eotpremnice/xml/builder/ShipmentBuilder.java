@@ -72,6 +72,9 @@ public final class ShipmentBuilder {
         }
 
         ShipmentStageType stage = new ShipmentStageType();
+        IDType stageID = new IDType();
+        stageID.setValue("1");
+        stage.setID(stageID);
         if (prevoznik != null) {
             stage.getCarrierParty().add(buildCarrierParty(prevoznik));
         }
