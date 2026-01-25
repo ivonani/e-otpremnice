@@ -96,7 +96,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                                         entry.getIdDok(),
                                         0,
                                         0,
-                                        getResp.getStatusCodeValue(),
+                                        100,
                                         null,
                                         null,
                                         json,
