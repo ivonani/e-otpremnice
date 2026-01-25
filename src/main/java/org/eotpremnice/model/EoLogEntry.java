@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class EoLogEntry {
-    Long idDok;
+    Integer idDok;
 }

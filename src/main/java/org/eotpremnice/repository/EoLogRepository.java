@@ -25,7 +25,7 @@ public class EoLogRepository {
 
         return jdbc.query(
                 sql,
-                (rs, rowNum) -> new EoLogEntry(rs.getLong("IDDOK")),
+                (rs, rowNum) -> new EoLogEntry(rs.getInt("IDDOK")),
                 idFirme,
                 tipDokumenta,
                 idRacunar

@@ -17,7 +17,7 @@ public class KurirService {
     private final KurirRepository repository;
     private final KurirMapper mapper;
 
-    public Kurir loadKurir(String idFirme, String tipDokumenta, Long iddok) {
+    public Kurir loadKurir(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         KurirEntityId.builder()
                                 .iDFirme(idFirme)

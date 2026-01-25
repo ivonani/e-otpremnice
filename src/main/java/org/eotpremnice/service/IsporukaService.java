@@ -17,7 +17,7 @@ public class IsporukaService {
     private final IsporukaRepository repository;
     private final IsporukaMapper mapper;
 
-    public Isporuka loadIsporuka(String idFirme, String tipDokumenta, Long iddok) {
+    public Isporuka loadIsporuka(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         IsporukaEntityId.builder()
                                 .iDFirme(idFirme)

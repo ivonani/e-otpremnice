@@ -11,7 +11,6 @@ import org.eotpremnice.service.SystblParamService;
 import org.eotpremnice.xml.builder.DespatchAdviceXmlBuilder;
 import org.eotpremnice.xml.writer.XmlFileWriter;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EOtpremniceJob implements CommandLineRunner {
 
-    private final JdbcTemplate jdbc;
     private final SystblParamService systblParamService;
     private final PristupniParametriService pristupniParametriService;
     private final EoLogService eoLogService;

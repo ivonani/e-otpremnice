@@ -33,7 +33,7 @@ public class DespatchAdviceXmlBuilder {
     private final MagacinService magacinService;
     private final StavkeService stavkeService;
 
-    public DespatchAdviceType builder(String idFirme, String tipDokumenta, Long iddok) throws Exception {
+    public DespatchAdviceType builder(String idFirme, String tipDokumenta, Integer iddok) throws Exception {
 
         DespatchAdviceType advice = new DespatchAdviceType();
         Otpremnice otpremnice = otpremniceService.loadOtpremnice(idFirme, tipDokumenta, iddok);

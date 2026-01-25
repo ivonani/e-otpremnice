@@ -17,7 +17,7 @@ public class VozacService {
     private final VozacRepository repository;
     private final VozacMapper mapper;
 
-    public Vozac loadVozac(String idFirme, String tipDokumenta, Long iddok) {
+    public Vozac loadVozac(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         VozacEntityId.builder()
                                 .iDFirme(idFirme)

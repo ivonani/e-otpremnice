@@ -17,7 +17,7 @@ public class OdredisteService {
     private final OdredisteRepository repository;
     private final OdredisteMapper mapper;
 
-    public Odrediste loadOdrediste(String idFirme, String tipDokumenta, Long iddok) {
+    public Odrediste loadOdrediste(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         OdredisteEntityId.builder()
                                 .iDFirme(idFirme)

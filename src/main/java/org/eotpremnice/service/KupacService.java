@@ -18,7 +18,7 @@ public class KupacService {
     private final KupacRepository repository;
     private final KupacMapper mapper;
 
-    public Kupac loadKupac(String idFirme, String tipDokumenta, Long idDok) {
+    public Kupac loadKupac(String idFirme, String tipDokumenta, Integer idDok) {
         KupacEntityId id = KupacEntityId.builder()
                 .iDFirme(idFirme)
                 .tipDokumenta(tipDokumenta)

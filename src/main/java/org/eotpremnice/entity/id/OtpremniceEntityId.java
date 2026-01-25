@@ -27,5 +27,5 @@ public class OtpremniceEntityId implements Serializable {
     private String tipDokumenta;
 
     @Column(name = "IDDOK")
-    private Long iddok;
+    private Integer iddok;
 }

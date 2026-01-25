@@ -17,7 +17,7 @@ public class MagacinService {
     private final MagacinRepository repository;
     private final MagacinMapper mapper;
 
-    public Magacin loadMagacin(String idFirme, String tipDokumenta, Long iddok) {
+    public Magacin loadMagacin(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         MagacinEntityId.builder()
                                 .iDFirme(idFirme)

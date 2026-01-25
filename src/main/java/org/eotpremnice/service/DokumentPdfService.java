@@ -17,7 +17,7 @@ public class DokumentPdfService {
     private final DokumentPdfRepository repository;
     private final DokumentPdfMapper mapper;
 
-    public List<DokumentPdf> loadPdfPrilozi(String idFirme, String tipDokumenta, Long iddok) {
+    public List<DokumentPdf> loadPdfPrilozi(String idFirme, String tipDokumenta, Integer iddok) {
 //        return repository.findByIdIdFirmeAndTipDokumentaAndIddok(idFirme, tipDokumenta, iddok)
 //                .stream()
 //                .map(mapper::toModel)

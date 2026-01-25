@@ -17,7 +17,7 @@ public class PrevoznikService {
     private final PrevoznikRepository repository;
     private final PrevoznikMapper mapper;
 
-    public Prevoznik loadPrevoznik(String idFirme, String tipDokumenta, Long iddok) {
+    public Prevoznik loadPrevoznik(String idFirme, String tipDokumenta, Integer iddok) {
         return repository.findById(
                         PrevoznikEntityId.builder()
                                 .iDFirme(idFirme)

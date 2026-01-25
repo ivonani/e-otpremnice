@@ -18,7 +18,7 @@ public class OtpremniceService {
     private final OtpremniceRepository repository;
     private final OtpremniceMapper mapper;
 
-    public Otpremnice loadOtpremnice(String idFirme, String tipDokumenta, Long idDok) {
+    public Otpremnice loadOtpremnice(String idFirme, String tipDokumenta, Integer idDok) {
         OtpremniceEntityId id = OtpremniceEntityId.builder()
                 .iDFirme(idFirme)
                 .tipDokumenta(tipDokumenta)
