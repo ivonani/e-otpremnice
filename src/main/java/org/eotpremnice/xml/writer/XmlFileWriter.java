@@ -23,18 +23,27 @@ public class XmlFileWriter {
 
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new UblNamespacePrefixMapper());
 
-        // 4. Write file
+        String xmlFullName = xmlName + ".xml";
         Path out = Paths.get(xmlLocation,
-                xmlName,
-                ".xml"
+                xmlFullName
         );
         Files.createDirectories(out.getParent());
+
+        Path out2 = Paths.get(
+                System.getProperty("user.home"),
+                "Documents",
+                "InSoft",
+                "xml",
+                xmlFullName
+        );
+        Files.createDirectories(out2.getParent());
 
         ObjectFactory factory = new ObjectFactory();
         JAXBElement<DespatchAdviceType> root =
                 factory.createDespatchAdvice(advice);
 
         marshaller.marshal(root, out.toFile());
+        marshaller.marshal(root, out2.toFile());
 
     }
 }
