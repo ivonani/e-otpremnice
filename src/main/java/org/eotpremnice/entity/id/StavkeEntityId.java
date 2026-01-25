@@ -20,7 +20,7 @@ public class StavkeEntityId implements Serializable {
 
     @Column(name = "IDFirme")
     @Convert(converter = StringTrimConverter.class)
-    private String iDFirme;
+    private String idFirme;
 
     @Column(name = "TipDokumenta")
     @Convert(converter = StringTrimConverter.class)
