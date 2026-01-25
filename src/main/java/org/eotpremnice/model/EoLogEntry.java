@@ -6,4 +6,5 @@ import lombok.Value;
 public class EoLogEntry {
     Integer idDok;
     String requestId;
+    String komanda;
 }

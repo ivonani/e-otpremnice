@@ -55,41 +55,55 @@ public class EOtpremniceJob implements CommandLineRunner {
                     key.getIdFirme(), key.getTipDokumenta(), idRacunar
             );
             for (EoLogEntry entry : logEntries) {
-                DespatchAdviceType advice;
-                try {
-                    advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
+                if (entry.getKomanda().equals("SEND_EO")) {
+                    DespatchAdviceType advice;
+                    try {
+                        advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
 
-                    String pfdLocation = systblParamService.loadXmlLocation(idRacunar);
-                    Path xmlPath = XmlFileWriter.write(advice, pfdLocation, entry.getRequestId());
+                        String pfdLocation = systblParamService.loadXmlLocation(idRacunar);
+                        Path xmlPath = XmlFileWriter.write(advice, pfdLocation, entry.getRequestId());
 
-                    ResponseEntity<String> responseEntity = sefClient.sendUblXml(xmlPath, api.getUrl(), api.getFile(), entry.getRequestId());
-                    if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
-                        LocalDate today = LocalDate.now();
-                        ResponseEntity<String> getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), today, entry.getRequestId());
-                        String json = getResp.getBody();
+                        ResponseEntity<String> responseEntity = sefClient.sendUblXml(xmlPath, api.getUrl(), api.getFile(), entry.getRequestId());
+                        if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+                            LocalDate today = LocalDate.now();
+                            ResponseEntity<String> getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), today, entry.getRequestId());
+                            String json = getResp.getBody();
 
-                        if (HttpStatus.OK.equals(getResp.getStatusCode())) {
+                            if (HttpStatus.OK.equals(getResp.getStatusCode())) {
 
-                            SupplierChangesResponse parsed = sefClient.parseChanges(objectMapper, json);
+                                SupplierChangesResponse parsed = sefClient.parseChanges(objectMapper, json);
 
-                            SupplierChangesResponse.Item item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
-                            SupplierChangesResponse.DataBlock data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
+                                SupplierChangesResponse.Item item0 = (parsed.getItems() != null && !parsed.getItems().isEmpty()) ? parsed.getItems().get(0) : null;
+                                SupplierChangesResponse.DataBlock data = (item0 != null && item0.getData() != null) ? item0.getData() : null;
 
-                            if (item0 != null && DOCUMENT_REQUEST_SUCCEEDED.equals(item0.getType())) {
+                                if (item0 != null && DOCUMENT_REQUEST_SUCCEEDED.equals(item0.getType())) {
 
-                                String sefId = (data != null) ? data.getDocumentId() : null;
+                                    String sefId = (data != null) ? data.getDocumentId() : null;
 
-                                eoLogService.updateLog(
-                                        key,
-                                        entry.getIdDok(),
-                                        0,
-                                        1,
-                                        200,
-                                        sefId,
-                                        "Sent",
-                                        json,
-                                        LocalDateTime.now()
-                                );
+                                    eoLogService.updateLog(
+                                            key,
+                                            entry.getIdDok(),
+                                            0,
+                                            1,
+                                            200,
+                                            sefId,
+                                            "Sent",
+                                            json,
+                                            LocalDateTime.now()
+                                    );
+                                } else {
+                                    eoLogService.updateLog(
+                                            key,
+                                            entry.getIdDok(),
+                                            0,
+                                            0,
+                                            100,
+                                            null,
+                                            null,
+                                            json,
+                                            null
+                                    );
+                                }
                             } else {
                                 eoLogService.updateLog(
                                         key,
@@ -109,52 +123,40 @@ public class EOtpremniceJob implements CommandLineRunner {
                                     entry.getIdDok(),
                                     0,
                                     0,
-                                    100,
+                                    responseEntity.getStatusCodeValue(),
                                     null,
                                     null,
-                                    json,
+                                    responseEntity.getBody(),
                                     null
                             );
                         }
-                    } else {
+                    } catch (ResourceAccessException timeoutEx) {
+                        // ⏱ TIMEOUT (nema odgovora za 1 min)
                         eoLogService.updateLog(
                                 key,
                                 entry.getIdDok(),
                                 0,
                                 0,
-                                responseEntity.getStatusCodeValue(),
+                                100,
                                 null,
                                 null,
-                                responseEntity.getBody(),
+                                "Isteklo je vreme cekanja, server nema odziv nakon 1 minuta",
+                                null
+                        );
+
+                    } catch (Exception e) {
+                        eoLogService.updateLog(
+                                key,
+                                entry.getIdDok(),
+                                0,
+                                0,
+                                100,
+                                null,
+                                null,
+                                e.getLocalizedMessage(),
                                 null
                         );
                     }
-                } catch (ResourceAccessException timeoutEx) {
-                    // ⏱ TIMEOUT (nema odgovora za 1 min)
-                    eoLogService.updateLog(
-                            key,
-                            entry.getIdDok(),
-                            0,
-                            0,
-                            100,
-                            null,
-                            null,
-                            "Isteklo je vreme cekanja, server nema odziv nakon 1 minuta",
-                            null
-                    );
-
-                } catch (Exception e) {
-                    eoLogService.updateLog(
-                            key,
-                            entry.getIdDok(),
-                            0,
-                            0,
-                            100,
-                            null,
-                            null,
-                            e.getLocalizedMessage(),
-                            null
-                    );
                 }
             }
         } catch (Exception exception) {
