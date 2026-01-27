@@ -1,5 +1,6 @@
 package org.eotpremnice.reader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,13 +19,17 @@ public final class SqlInstanceFileReader {
                 throw new IllegalStateException("SysFirma.txt ne postoji na lokaciji: " + SYSFIRMA_PATH);
             }
 
-            String instance = new String(Files.readAllBytes(SYSFIRMA_PATH), StandardCharsets.UTF_8).trim();
+            try (BufferedReader br = Files.newBufferedReader(SYSFIRMA_PATH, StandardCharsets.UTF_8)) {
+                String firstLine = br.readLine(); // чита само прву линију
+                String instance = (firstLine != null) ? firstLine.trim() : "";
 
-            if (instance.isEmpty()) {
-                throw new IllegalStateException("SysFirma.txt je prazan (nije upisan naziv SQL instance).");
+                if (instance.isEmpty()) {
+                    throw new IllegalStateException("SysFirma.txt je prazan (prva linija je prazna).");
+                }
+
+                return instance;
             }
 
-            return instance;
         } catch (IOException e) {
             throw new IllegalStateException("Ne mogu da procitam SysFirma.txt: " + SYSFIRMA_PATH, e);
         }
