@@ -58,7 +58,40 @@ public class EoLogService {
         e.setSefId(sefId);
         e.setResponseStatus(fullJsonResponse);
         e.setStatus(status);
+        e.setIdRacunar(null);
 
+        repository.save(e);
+    }
+
+    @Transactional
+    public void updateLogStatus(
+            FirmaKey key,
+            Integer iddok,
+            Integer zaSlanje,
+            Integer idError,
+            String status,
+            String fullJsonResponse,
+            Integer obradjenStatus
+    ) {
+        LogEntity e = repository.findById(
+                        LogEntityId.builder()
+                                .iDFirme(key.getIdFirme())
+                                .tipDokumenta(key.getTipDokumenta())
+                                .iddok(iddok)
+                                .build()
+                )
+                .orElseThrow(() -> new IllegalStateException(
+                        "eoLog not found for key: " + key.getIdFirme() + "/" + key.getTipDokumenta() + "/" + iddok
+                ));
+
+        e.setZaSlanje(zaSlanje);
+        e.setDatumSlanja(LocalDateTime.now());
+        e.setIdError(idError);
+        e.setResponseStatus(fullJsonResponse);
+        e.setObradjenStatus(obradjenStatus);
+        if (status != null) {
+            e.setStatus(status);
+        }
         e.setIdRacunar(null);
 
         repository.save(e);

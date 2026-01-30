@@ -20,7 +20,7 @@ public final class SqlInstanceFileReader {
             }
 
             try (BufferedReader br = Files.newBufferedReader(SYSFIRMA_PATH, StandardCharsets.UTF_8)) {
-                String firstLine = br.readLine(); // чита само прву линију
+                String firstLine = br.readLine();
                 String instance = (firstLine != null) ? firstLine.trim() : "";
 
                 if (instance.isEmpty()) {

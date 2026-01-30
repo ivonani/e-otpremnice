@@ -15,20 +15,20 @@ public class EoLogEntryRepository {
 
     public List<EoLogEntry> findIDDOKs(String idFirme, String tipDokumenta, String idRacunar) {
         String sql =
-                "SELECT IDDOK, RTRIM(RequestID) as RequestID, Komanda " +
+                "SELECT IDDOK, RTRIM(RequestID) as RequestID, Komanda, RTRIM(SEF_ID) as SEF_ID " +
                         "FROM dbo.eoLog " +
                         "WHERE IDFirme = ? " +
                         "  AND TipDokumenta = ? " +
                         "  AND IDRacunar = ? " +
-                        "  AND ZaSlanje = 1 " +
-                        "  AND Komanda = 'SEND_EO'";
+                        "  AND ZaSlanje = 1 ";
 
         return jdbc.query(
                 sql,
                 (rs, rowNum) -> new EoLogEntry(
                         rs.getInt("IDDOK"),
                         rs.getString("RequestID"),
-                        rs.getString("Komanda")),
+                        rs.getString("Komanda"),
+                        rs.getString("SEF_ID")),
                 idFirme,
                 tipDokumenta,
                 idRacunar

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
 import org.eotpremnice.client.SefClient;
-import org.eotpremnice.model.EoLogEntry;
-import org.eotpremnice.model.FirmaKey;
-import org.eotpremnice.model.PristupniParametri;
-import org.eotpremnice.model.SupplierChangesResponse;
+import org.eotpremnice.model.*;
 import org.eotpremnice.service.EoLogService;
 import org.eotpremnice.service.PristupniParametriService;
 import org.eotpremnice.service.SemaforService;
@@ -16,7 +13,6 @@ import org.eotpremnice.xml.builder.DespatchAdviceXmlBuilder;
 import org.eotpremnice.xml.writer.ErrorFileWriter;
 import org.eotpremnice.xml.writer.XmlFileWriter;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
@@ -47,6 +43,7 @@ public class EOtpremniceJob implements CommandLineRunner {
         System.out.println("Start...");
 
         String idRacunar = requireIdRacunar(args);
+        if (idRacunar == null) return;
 
         try {
             PristupniParametri api = pristupniParametriService.loadApiAccess();
@@ -57,20 +54,19 @@ public class EOtpremniceJob implements CommandLineRunner {
             );
             for (EoLogEntry entry : logEntries) {
                 if (entry.getKomanda().equals("SEND_EO")) {
-                    DespatchAdviceType advice;
                     try {
-                        advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
+                        DespatchAdviceType advice = builder.builder(key.getIdFirme(), key.getTipDokumenta(), entry.getIdDok());
 
                         String pfdLocation = systblParamService.loadXmlLocation(idRacunar);
                         Path xmlPath = XmlFileWriter.write(advice, pfdLocation, entry.getRequestId());
 
                         ResponseEntity<String> responseEntity = sefClient.sendUblXml(xmlPath, api.getUrl(), api.getFile(), entry.getRequestId());
-                        if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+                        if (responseEntity.getStatusCode().is2xxSuccessful()) {
 
                             ResponseEntity<String> getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), LocalDate.now(), entry.getRequestId());
                             String json = getResp.getBody();
 
-                            if (HttpStatus.OK.equals(getResp.getStatusCode())) {
+                            if (getResp.getStatusCode().is2xxSuccessful()) {
 
                                 SupplierChangesResponse parsed = sefClient.parseChanges(objectMapper, json);
 
@@ -96,82 +92,45 @@ public class EOtpremniceJob implements CommandLineRunner {
 
                                     String sefId = (data != null) ? data.getDocumentId() : null;
 
-                                    eoLogService.updateLog(
-                                            key,
-                                            entry.getIdDok(),
-                                            0,
-                                            1,
-                                            200,
-                                            sefId,
-                                            "Sent",
-                                            json,
-                                            LocalDateTime.now()
-                                    );
+                                    updateLogSuccess(entry, key, sefId, json);
                                 } else {
-                                    eoLogService.updateLog(
-                                            key,
-                                            entry.getIdDok(),
-                                            0,
-                                            0,
-                                            100,
-                                            null,
-                                            null,
-                                            json,
-                                            null
-                                    );
+                                    updateLogError(key, entry, 100, json);
                                 }
                             } else {
-                                eoLogService.updateLog(
-                                        key,
-                                        entry.getIdDok(),
-                                        0,
-                                        0,
-                                        100,
-                                        null,
-                                        null,
-                                        json,
-                                        null
-                                );
+                                updateLogError(key, entry, 100, json);
                             }
                         } else {
-                            eoLogService.updateLog(
-                                    key,
-                                    entry.getIdDok(),
-                                    0,
-                                    0,
-                                    responseEntity.getStatusCodeValue(),
-                                    null,
-                                    null,
-                                    responseEntity.getBody(),
-                                    null
-                            );
+                            updateLogError(key, entry, responseEntity.getStatusCodeValue(), responseEntity.getBody());
                         }
                     } catch (ResourceAccessException timeoutEx) {
                         // ⏱ TIMEOUT (nema odgovora za 1 min)
-                        eoLogService.updateLog(
-                                key,
-                                entry.getIdDok(),
-                                0,
-                                0,
-                                100,
-                                null,
-                                null,
-                                "Isteklo je vreme cekanja, server nema odziv nakon 1 minuta",
-                                null
-                        );
+                        updateLogError(key, entry, 100, "Isteklo je vreme cekanja, server nema odziv nakon 1 minuta");
 
                     } catch (Exception e) {
-                        eoLogService.updateLog(
-                                key,
-                                entry.getIdDok(),
-                                0,
-                                0,
-                                100,
-                                null,
-                                null,
-                                e.getLocalizedMessage(),
-                                null
-                        );
+                        updateLogError(key, entry, 100, e.getLocalizedMessage());
+                    }
+                } else if (entry.getKomanda().equals("STATUS")) {
+                    ResponseEntity<String> statusResp =
+                            sefClient.getDespatchAdviceStatus(
+                                    api.getUrl(),
+                                    api.getFile(),
+                                    entry.getSefId()
+                            );
+
+                    String jsonStatus = statusResp.getBody();
+
+                    if (statusResp.getStatusCode().is2xxSuccessful()) {
+
+                        try {
+                            DespatchAdviceStatusResponse parsedData = sefClient.parseChangesStatus(objectMapper, jsonStatus);
+
+                            String status = (parsedData != null) ? parsedData.getStatus() : null;
+                            updateLogSuccessStatus(entry, key, jsonStatus, status);
+                        } catch (Exception e) {
+                            updateLogErrorStatus(entry, key, jsonStatus, 100);
+                        }
+                    } else {
+                        updateLogErrorStatus(entry, key, jsonStatus, statusResp.getStatusCodeValue());
                     }
                 }
             }
@@ -182,11 +141,65 @@ public class EOtpremniceJob implements CommandLineRunner {
         }
     }
 
+    private void updateLogSuccess(EoLogEntry entry, FirmaKey key, String sefId, String json) {
+        eoLogService.updateLog(
+                key,
+                entry.getIdDok(),
+                0,
+                1,
+                200,
+                sefId,
+                "Sent",
+                json,
+                LocalDateTime.now()
+        );
+    }
+
+    private void updateLogSuccessStatus(EoLogEntry entry, FirmaKey key, String json, String status) {
+        eoLogService.updateLogStatus(
+                key,
+                entry.getIdDok(),
+                0,
+                200,
+                status,
+                json,
+                1
+        );
+    }
+
+    private void updateLogError(FirmaKey key, EoLogEntry entry, int idError, String e) {
+        eoLogService.updateLog(
+                key,
+                entry.getIdDok(),
+                0,
+                0,
+                idError,
+                null,
+                null,
+                e,
+                null
+        );
+    }
+
+    private void updateLogErrorStatus(EoLogEntry entry, FirmaKey key, String json, Integer idError) {
+        eoLogService.updateLogStatus(
+                key,
+                entry.getIdDok(),
+                0,
+                idError,
+                null,
+                json,
+                0
+        );
+    }
+
     private String requireIdRacunar(String[] args) {
-        if (args == null || args.length != 1 || args[0].trim().isEmpty()) {
-            ErrorFileWriter.write("Nepravilan IDRacunar, kao default koristi se 00015");
-            return "00015";
+        if (args != null && args.length == 1) {
+            return args[0].trim();
+        } else {
+            ErrorFileWriter.write("Nepravilan IDRacunar");
+//            return "00015";
+            return null;
         }
-        return args[0].trim();
     }
 }

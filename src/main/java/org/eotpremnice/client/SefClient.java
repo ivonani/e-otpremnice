@@ -2,6 +2,7 @@ package org.eotpremnice.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.eotpremnice.model.DespatchAdviceStatusResponse;
 import org.eotpremnice.model.SupplierChangesResponse;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -59,7 +60,32 @@ public class SefClient {
         return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
+    public ResponseEntity<String> getDespatchAdviceStatus(
+            String urlBase,
+            String apiKey,
+            String sefId
+    ) {
+        String url = UriComponentsBuilder
+                .fromHttpUrl(urlBase)
+                .path("/suppliers/despatch-advices/")
+                .path(sefId.trim())
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Api-key", apiKey);
+        headers.setAccept(Collections.singletonList(MediaType.TEXT_PLAIN));
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    }
+
+
     public SupplierChangesResponse parseChanges(ObjectMapper om, String json) throws Exception {
         return om.readValue(json, SupplierChangesResponse.class);
+    }
+
+    public DespatchAdviceStatusResponse parseChangesStatus(ObjectMapper om, String json) throws Exception {
+        return om.readValue(json, DespatchAdviceStatusResponse.class);
     }
 }
