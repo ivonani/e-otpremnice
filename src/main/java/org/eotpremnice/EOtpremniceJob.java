@@ -61,9 +61,11 @@ public class EOtpremniceJob implements CommandLineRunner {
                         Path xmlPath = XmlFileWriter.write(advice, pfdLocation, entry.getRequestId());
 
                         ResponseEntity<String> responseEntity = sefClient.sendUblXml(xmlPath, api.getUrl(), api.getFile(), entry.getRequestId());
+                        sleepQuietly(2000);
                         if (responseEntity.getStatusCode().is2xxSuccessful()) {
 
                             ResponseEntity<String> getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), LocalDate.now(), entry.getRequestId());
+                            sleepQuietly(2000);
                             String json = getResp.getBody();
 
                             if (getResp.getStatusCode().is2xxSuccessful()) {
@@ -75,9 +77,9 @@ public class EOtpremniceJob implements CommandLineRunner {
                                 int i = 15;
 
                                 while (item0 != null && DOCUMENT_REQUEST_PENDING.equals(item0.getType()) && i >= 0) {
-                                    Thread.sleep(5000);
 
                                     getResp = sefClient.getSupplierChangesRaw(api.getUrl(), api.getFile(), LocalDate.now(), entry.getRequestId());
+                                    sleepQuietly(5000);
                                     json = getResp.getBody();
 
                                     parsed = sefClient.parseChanges(objectMapper, json);
@@ -116,7 +118,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                                     api.getFile(),
                                     entry.getSefId()
                             );
-
+                    sleepQuietly(2000);
                     String jsonStatus = statusResp.getBody();
 
                     if (statusResp.getStatusCode().is2xxSuccessful()) {
@@ -202,4 +204,11 @@ public class EOtpremniceJob implements CommandLineRunner {
             return null;
         }
     }
+
+    private void sleepQuietly(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ignored) {}
+    }
+
 }
