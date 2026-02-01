@@ -15,7 +15,7 @@ public class XmlFileWriterStatus {
 
     public static Path write(ApplicationResponseType response, String xmlLocation, String xmlName) throws Exception {
 
-        JAXBContext context = JAXBContext.newInstance("oasis.names.specification.ubl.schema.xsd.despatchadvice_2");
+        JAXBContext context = JAXBContext.newInstance("oasis.names.specification.ubl.schema.xsd.applicationresponse_2");
         Marshaller marshaller = context.createMarshaller();
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -29,21 +29,11 @@ public class XmlFileWriterStatus {
         );
         Files.createDirectories(out.getParent());
 
-        Path out2 = Paths.get(
-                System.getProperty("user.home"),
-                "Documents",
-                "InSoft",
-                "xml",
-                xmlFullName
-        );
-        Files.createDirectories(out2.getParent());
-
         ObjectFactory factory = new ObjectFactory();
         JAXBElement<ApplicationResponseType> root =
                 factory.createApplicationResponse(response);
 
         marshaller.marshal(root, out.toFile());
-        marshaller.marshal(root, out2.toFile());
 
         return out;
     }

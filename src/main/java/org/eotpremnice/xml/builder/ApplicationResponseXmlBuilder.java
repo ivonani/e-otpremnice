@@ -56,7 +56,7 @@ public class ApplicationResponseXmlBuilder {
         endpointID2.setValue(promenaStatusa.getPibKupac());
         endpointID2.setSchemeID(SCHEME_9948);
         receiverParty.setEndpointID(endpointID2);
-        response.setSenderParty(receiverParty);
+        response.setReceiverParty(receiverParty);
 
         DocumentResponseType documentResponseType = new DocumentResponseType();
         ResponseType responseType = new ResponseType();
@@ -80,7 +80,6 @@ public class ApplicationResponseXmlBuilder {
         endpointID3.setValue(promenaStatusa.getPibDobavljac());
         endpointID3.setSchemeID(SCHEME_9948);
         issuerParty.setEndpointID(endpointID3);
-        response.setSenderParty(issuerParty);
         documentReferenceType.setIssuerParty(issuerParty);
         documentResponseType.getDocumentReference().add(documentReferenceType);
 
