@@ -49,21 +49,21 @@ public class EoLogService {
                 ));
 
         e.setZaSlanje(zaSlanje);
-        e.setOtpremljen(otpremljen);
 
         e.setDatumSlanja(LocalDateTime.now());
-        e.setDatumOtpreme(datumOtpreme);
+        if (promenjenStatus == null) {
+            e.setOtpremljen(otpremljen);
+            e.setDatumOtpreme(datumOtpreme);
+            e.setSefId(sefId);
+        } else {
+            e.setPromenjenStatus(promenjenStatus);
+        }
 
         e.setIdError(idError);
 
-        e.setSefId(sefId);
         e.setResponseStatus(fullJsonResponse);
         e.setStatus(status);
         e.setIdRacunar(null);
-
-        if (promenjenStatus != null) {
-            e.setPromenjenStatus(promenjenStatus);
-        }
 
         repository.save(e);
     }
