@@ -9,6 +9,7 @@ import org.eotpremnice.entity.id.PromenaStatusaEntityId;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -26,7 +27,7 @@ public class PromenaStatusaEntity implements Serializable {
 
     @Column(name = "DatumPromene")
     @Convert(converter = StringTrimConverter.class)
-    private String datumPromene;
+    private LocalDate datumPromene;
 
     @Column(name = "OznakaPromene")
     @Convert(converter = StringTrimConverter.class)
@@ -50,7 +51,7 @@ public class PromenaStatusaEntity implements Serializable {
 
     @Column(name = "DatumIzdavanja")
     @Convert(converter = StringTrimConverter.class)
-    private String datumIzdavanja;
+    private LocalDate datumIzdavanja;
 
     @Column(name = "Poslato")
     private Integer poslato;
