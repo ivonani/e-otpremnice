@@ -1,7 +1,7 @@
 package org.eotpremnice.xml.writer;
 
-import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.DespatchAdviceType;
-import oasis.names.specification.ubl.schema.xsd.despatchadvice_2.ObjectFactory;
+import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
+import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ObjectFactory;
 import org.eotpremnice.mapper.UblNamespacePrefixMapper;
 
 import javax.xml.bind.JAXBContext;
@@ -11,9 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class XmlFileWriter {
+public class XmlFileWriterStatus {
 
-    public static Path write(DespatchAdviceType advice, String xmlLocation, String xmlName) throws Exception {
+    public static Path write(ApplicationResponseType response, String xmlLocation, String xmlName) throws Exception {
 
         JAXBContext context = JAXBContext.newInstance("oasis.names.specification.ubl.schema.xsd.despatchadvice_2");
         Marshaller marshaller = context.createMarshaller();
@@ -29,11 +29,21 @@ public class XmlFileWriter {
         );
         Files.createDirectories(out.getParent());
 
+        Path out2 = Paths.get(
+                System.getProperty("user.home"),
+                "Documents",
+                "InSoft",
+                "xml",
+                xmlFullName
+        );
+        Files.createDirectories(out2.getParent());
+
         ObjectFactory factory = new ObjectFactory();
-        JAXBElement<DespatchAdviceType> root =
-                factory.createDespatchAdvice(advice);
+        JAXBElement<ApplicationResponseType> root =
+                factory.createApplicationResponse(response);
 
         marshaller.marshal(root, out.toFile());
+        marshaller.marshal(root, out2.toFile());
 
         return out;
     }

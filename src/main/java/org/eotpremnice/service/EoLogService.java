@@ -34,7 +34,8 @@ public class EoLogService {
             String sefId,
             String status,
             String fullJsonResponse,
-            LocalDateTime datumOtpreme
+            LocalDateTime datumOtpreme,
+            Integer promenjenStatus
     ) {
         LogEntity e = repository.findById(
                         LogEntityId.builder()
@@ -59,6 +60,10 @@ public class EoLogService {
         e.setResponseStatus(fullJsonResponse);
         e.setStatus(status);
         e.setIdRacunar(null);
+
+        if (promenjenStatus != null) {
+            e.setPromenjenStatus(promenjenStatus);
+        }
 
         repository.save(e);
     }
