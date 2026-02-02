@@ -51,18 +51,22 @@ public class EoLogService {
         e.setZaSlanje(zaSlanje);
 
         e.setDatumSlanja(LocalDateTime.now());
-        if (promenjenStatus == null) {
-            e.setOtpremljen(otpremljen);
+        if (datumOtpreme != null) {
             e.setDatumOtpreme(datumOtpreme);
-            e.setSefId(sefId);
-        } else {
-            e.setPromenjenStatus(promenjenStatus);
         }
-
+        if (sefId != null) {
+            e.setSefId(sefId);
+        }
+        if (promenjenStatus != null) {
+            e.setPromenjenStatus(promenjenStatus);
+        } else {
+            e.setOtpremljen(otpremljen);
+        }
         e.setIdError(idError);
-
         e.setResponseStatus(fullJsonResponse);
-        e.setStatus(status);
+        if (status != null ) {
+            e.setStatus(status);
+        }
         e.setIdRacunar(null);
 
         repository.save(e);

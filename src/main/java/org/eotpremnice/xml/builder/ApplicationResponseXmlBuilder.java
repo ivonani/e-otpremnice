@@ -2,10 +2,7 @@ package org.eotpremnice.xml.builder;
 
 import lombok.RequiredArgsConstructor;
 import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
 import org.eotpremnice.model.PromenaStatusa;
 import org.eotpremnice.utils.XmlDates;
@@ -56,6 +53,15 @@ public class ApplicationResponseXmlBuilder {
         endpointID2.setValue(promenaStatusa.getPibKupac());
         endpointID2.setSchemeID(SCHEME_9948);
         receiverParty.setEndpointID(endpointID2);
+
+        if (promenaStatusa.getJbkjs() != null) {
+            PartyIdentificationType partyIdentificationType = new PartyIdentificationType();
+            IDType id = new IDType();
+            id.setValue("JBKJS:"+promenaStatusa.getJbkjs());
+            partyIdentificationType.setID(id);
+            receiverParty.getPartyIdentification().add(partyIdentificationType);
+        }
+
         response.setReceiverParty(receiverParty);
 
         DocumentResponseType documentResponseType = new DocumentResponseType();

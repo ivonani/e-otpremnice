@@ -44,6 +44,10 @@ public class PromenaStatusaEntity implements Serializable {
     @Convert(converter = StringTrimConverter.class)
     private String pibKupac;
 
+    @Column(name = "JBKJS")
+    @Convert(converter = StringTrimConverter.class)
+    private String jbkjs;
+
     @Column(name = "BrDok")
     @Convert(converter = StringTrimConverter.class)
     private String brDok;

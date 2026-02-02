@@ -168,9 +168,8 @@ public class EOtpremniceJob implements CommandLineRunner {
                 if (item0 != null && DOCUMENT_REQUEST_SUCCEEDED.equals(item0.getType())) {
 
                     String sefId = (data != null) ? data.getDocumentId() : null;
-                    String status = (data != null) ? data.getStatus() : null;
 
-                    updateLogSuccess(entry, key, sefId, json, stateChange, status);
+                    updateLogSuccess(entry, key, sefId, json, stateChange);
                 } else {
                     updateLogError(key, entry, 100, json, stateChange);
                 }
@@ -182,7 +181,7 @@ public class EOtpremniceJob implements CommandLineRunner {
         }
     }
 
-    private void updateLogSuccess(EoLogEntry entry, FirmaKey key, String sefId, String json, boolean promenaStatusa, String status) {
+    private void updateLogSuccess(EoLogEntry entry, FirmaKey key, String sefId, String json, boolean promenaStatusa) {
         eoLogService.updateLog(
                 key,
                 entry.getIdDok(),
@@ -190,7 +189,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                 1,
                 200,
                 sefId,
-                promenaStatusa ? status : "Sent",
+                promenaStatusa ? "Cancelled" : "Sent",
                 json,
                 LocalDateTime.now(),
                 promenaStatusa ? 1 : null

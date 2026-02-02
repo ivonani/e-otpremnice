@@ -18,6 +18,7 @@ public class PromenaStatusa {
     private String razlogPromene;
     private String pibDobavljac;
     private String pibKupac;
+    private String jbkjs;
     private String brDok;
     private String requestId;
     private LocalDate datumIzdavanja;
