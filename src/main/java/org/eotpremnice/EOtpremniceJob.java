@@ -17,9 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -65,12 +69,43 @@ public class EOtpremniceJob implements CommandLineRunner {
                     case "CHANGE_ST":
                         processChangeST(entry, key, idRacunar, api);
                         break;
+                    case "PDF":
+                        processLoadPDF(entry, key, api);
+                        break;
                 }
             }
         } catch (Exception exception) {
             ErrorFileWriter.write(exception.getLocalizedMessage());
         } finally {
             semaforService.resetEDokument(idRacunar);
+        }
+    }
+
+    private void processLoadPDF(EoLogEntry entry, FirmaKey key, PristupniParametri api) {
+        ResponseEntity<byte[]> response =
+                sefClient.downloadPdf(
+                        api.getUrl(),
+                        api.getFile(),
+                        entry.getSefId()
+                );
+        sleepQuietly(2000);
+
+        byte[] responseBody = response.getBody();
+        if (responseBody != null) {
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Path targetPath = Paths.get(key.getPutanjaZaPDF());
+                Path pdfPath = targetPath.resolve(entry.getSefId().trim() + ".pdf");
+                try {
+                    Files.write(pdfPath, response.getBody());
+                    updateLogSuccessStatus(entry, key, "OK", null, null);
+                } catch (IOException e) {
+                    updateLogErrorStatus(entry, key, "Greska pri cuvanje pdf-a", response.getStatusCodeValue(), null);
+                }
+            } else {
+                updateLogErrorStatus(entry, key, Arrays.toString(responseBody), response.getStatusCodeValue(), null);
+            }
+        } else {
+            updateLogErrorStatus(entry, key, "Response body je null", response.getStatusCodeValue(), null);
         }
     }
 
@@ -110,12 +145,12 @@ public class EOtpremniceJob implements CommandLineRunner {
                 DespatchAdviceStatusResponse parsedData = sefClient.parseChangesStatus(objectMapper, jsonStatus);
 
                 String status = (parsedData != null) ? parsedData.getStatus() : null;
-                updateLogSuccessStatus(entry, key, jsonStatus, status);
+                updateLogSuccessStatus(entry, key, jsonStatus, status, 1);
             } catch (Exception e) {
-                updateLogErrorStatus(entry, key, jsonStatus, 100);
+                updateLogErrorStatus(entry, key, jsonStatus, 100, 0);
             }
         } else {
-            updateLogErrorStatus(entry, key, jsonStatus, statusResp.getStatusCodeValue());
+            updateLogErrorStatus(entry, key, jsonStatus, statusResp.getStatusCodeValue(), 0);
         }
     }
 
@@ -196,7 +231,7 @@ public class EOtpremniceJob implements CommandLineRunner {
         );
     }
 
-    private void updateLogSuccessStatus(EoLogEntry entry, FirmaKey key, String json, String status) {
+    private void updateLogSuccessStatus(EoLogEntry entry, FirmaKey key, String json, String status, Integer obradjenStatus) {
         eoLogService.updateLogStatus(
                 key,
                 entry.getIdDok(),
@@ -204,7 +239,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                 200,
                 status,
                 json,
-                1
+                obradjenStatus
         );
     }
 
@@ -223,7 +258,7 @@ public class EOtpremniceJob implements CommandLineRunner {
         );
     }
 
-    private void updateLogErrorStatus(EoLogEntry entry, FirmaKey key, String json, Integer idError) {
+    private void updateLogErrorStatus(EoLogEntry entry, FirmaKey key, String json, Integer idError, Integer obradjenStatus) {
         eoLogService.updateLogStatus(
                 key,
                 entry.getIdDok(),
@@ -231,7 +266,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                 idError,
                 null,
                 json,
-                0
+                obradjenStatus
         );
     }
 

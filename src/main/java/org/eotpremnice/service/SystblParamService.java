@@ -15,6 +15,7 @@ public class SystblParamService {
 
         String idFirme = repo.readNcharParam(451);
         String tipDokumenta = repo.readNcharParam(452);
+        String putanjaZaPDF = repo.readNcharParam(457);
 
         if (idFirme == null || idFirme.trim().isEmpty()) {
             throw new IllegalStateException("IDFirme is empty for IDRacunar=" + idRacunar);
@@ -22,8 +23,11 @@ public class SystblParamService {
         if (tipDokumenta == null || tipDokumenta.trim().isEmpty()) {
             throw new IllegalStateException("TipDokumenta is empty for IDRacunar=" + idRacunar);
         }
+        if (putanjaZaPDF == null || putanjaZaPDF.trim().isEmpty()) {
+            throw new IllegalStateException("PutanjaZaPDF is empty for IDRacunar=" + idRacunar);
+        }
 
-        return new FirmaKey(idFirme.trim(), tipDokumenta.trim());
+        return new FirmaKey(idFirme.trim(), tipDokumenta.trim(), putanjaZaPDF.trim());
     }
 
     public String loadXmlLocation(String idRacunar) {

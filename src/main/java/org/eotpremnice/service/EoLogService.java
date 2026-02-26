@@ -97,7 +97,9 @@ public class EoLogService {
         e.setDatumSlanja(LocalDateTime.now());
         e.setIdError(idError);
         e.setResponseStatus(fullJsonResponse);
-        e.setObradjenStatus(obradjenStatus);
+        if (obradjenStatus != null) {
+            e.setObradjenStatus(obradjenStatus);
+        }
         if (status != null) {
             e.setStatus(status);
         }

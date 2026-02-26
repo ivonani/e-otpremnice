@@ -6,4 +6,5 @@ import lombok.Value;
 public class FirmaKey {
     String idFirme;
     String tipDokumenta;
+    String putanjaZaPDF;
 }

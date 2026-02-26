@@ -80,6 +80,32 @@ public class SefClient {
         return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
+    public ResponseEntity<byte[]> downloadPdf(
+            String urlBase,
+            String apiKey,
+            String sefId
+    ) {
+        String url = UriComponentsBuilder
+                .fromHttpUrl(urlBase)
+                .path("/public/documents/suppliers/despatch-advices/")
+                .path(sefId.trim())
+                .path("/pdf/download")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Api-key", apiKey);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_PDF));
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                byte[].class
+        );
+    }
+
 
     public SupplierChangesResponse parseChanges(ObjectMapper om, String json) throws Exception {
         return om.readValue(json, SupplierChangesResponse.class);
