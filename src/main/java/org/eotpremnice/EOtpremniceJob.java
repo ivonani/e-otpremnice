@@ -223,7 +223,7 @@ public class EOtpremniceJob implements CommandLineRunner {
                 0,
                 1,
                 200,
-                sefId,
+                promenaStatusa ? null : sefId,
                 promenaStatusa ? "Cancelled" : "Sent",
                 json,
                 LocalDateTime.now(),
