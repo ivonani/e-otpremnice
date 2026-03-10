@@ -6,44 +6,71 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 public final class ErrorFileWriter {
 
-    private static final Path ERROR_FILE = Paths.get(
-            System.getProperty("user.dir"),
+    private static final Path ERROR_FILE = Paths.get("C:\\InSoft\\",
             "error_0.txt"
     );
 
+//    public static void write(String message) {
+//        try {
+//            Files.write(ERROR_FILE, message.getBytes(StandardCharsets.UTF_8));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     public static void write(String message) {
-        try {
-            Files.write(ERROR_FILE, message.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writeInternal(message, null, false);
     }
 
-    public static synchronized void writeToErrorTxt(String title, Throwable t) {
+    public static void write(Throwable t) {
+        writeInternal(null, t, false);
+    }
 
+    public static void write(String message, Throwable t) {
+        writeInternal(message, t, false);
+    }
+
+    // Ako želiš da se greške nadovezuju umesto da pregaze fajl
+    public static void append(String message, Throwable t) {
+        writeInternal(message, t, true);
+    }
+
+    private static void writeInternal(String message, Throwable t, boolean append) {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append("[").append(LocalDateTime.now()).append("] ").append(title).append("\n");
-            sb.append(t.toString()).append("\n\n");
+            sb.append("=== ERROR ").append(LocalDateTime.now()).append(" ===\n");
 
-            StringWriter sw = new StringWriter();
-            t.printStackTrace(new PrintWriter(sw));
-            sb.append(sw).append("\n");
-            sb.append("------------------------------------------------------------\n\n");
+            if (message != null && !message.isEmpty()) {
+                sb.append("Message: ").append(message).append("\n");
+            }
 
-            Files.write(ERROR_FILE, sb.toString().getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        } catch (Exception ignored) {
-            // last resort: nothing else we can do
+            if (t != null) {
+                sb.append("Exception: ").append(t.getClass().getName()).append("\n");
+                sb.append("Exception message: ").append(t.getMessage()).append("\n");
+
+                StringWriter sw = new StringWriter();
+                t.printStackTrace(new PrintWriter(sw));
+                sb.append("Stacktrace:\n").append(sw).append("\n");
+            }
+
+            sb.append("====================================\n");
+
+            byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+
+            OpenOption[] opts = append
+                    ? new OpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND}
+                    : new OpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
+
+            Files.write(ERROR_FILE, bytes, opts);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -2,6 +2,7 @@ package org.eotpremnice.config;
 
 import org.eotpremnice.database.SqlServerUrlFactory;
 import org.eotpremnice.reader.SqlInstanceFileReader;
+import org.eotpremnice.xml.writer.ErrorFileWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -25,7 +26,8 @@ public class BootstrapDataSourceConfig {
             ds.setPassword("In$oft60181680");
             return ds;
         } catch (RuntimeException e) {
-            throw new RuntimeException("Nemoguc pristup bazi podataka");
+            ErrorFileWriter.write("Nemoguc pristup bazi podataka (BootstrapDataSourceConfig)", e);
+            throw new RuntimeException("Nemoguc pristup bazi podataka", e);
         }
     }
 }

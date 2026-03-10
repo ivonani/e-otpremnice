@@ -51,13 +51,26 @@ public class EOtpremniceJob implements CommandLineRunner {
         String idRacunar = requireIdRacunar(args);
         if (idRacunar == null) return;
 
-        try {
-            PristupniParametri api = pristupniParametriService.loadApiAccess();
-            FirmaKey key = systblParamService.loadFirmaKey(idRacunar);
+        PristupniParametri api;
+        FirmaKey key;
+        List<EoLogEntry> logEntries;
 
-            List<EoLogEntry> logEntries = eoLogService.loadDocumentsToSend(
+        try {
+            api = pristupniParametriService.loadApiAccess();
+            key = systblParamService.loadFirmaKey(idRacunar);
+
+            logEntries = eoLogService.loadDocumentsToSend(
                     key.getIdFirme(), key.getTipDokumenta(), idRacunar
             );
+
+        } catch (Exception e) {
+            ErrorFileWriter.write(
+                    "Error before processing entries. idRacunar=" + idRacunar, e
+            );
+            return;
+        }
+
+        try {
             for (EoLogEntry entry : logEntries) {
                 switch (entry.getKomanda()) {
                     case "SEND_EO":
@@ -74,8 +87,8 @@ public class EOtpremniceJob implements CommandLineRunner {
                         break;
                 }
             }
-        } catch (Exception exception) {
-            ErrorFileWriter.write(exception.getLocalizedMessage());
+        } catch (Exception e) {
+            ErrorFileWriter.write("Error during processing entries. idRacunar=" + idRacunar, e);
         } finally {
             semaforService.resetEDokument(idRacunar);
         }

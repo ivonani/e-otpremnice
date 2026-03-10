@@ -87,7 +87,7 @@ public class SefClient {
     ) {
         String url = UriComponentsBuilder
                 .fromHttpUrl(urlBase)
-                .path("/public/documents/suppliers/despatch-advices/")
+                .path("/suppliers/despatch-advices/")
                 .path(sefId.trim())
                 .path("/pdf/download")
                 .toUriString();
